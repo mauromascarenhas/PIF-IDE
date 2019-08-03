@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>460</width>
+    <width>478</width>
     <height>374</height>
    </rect>
   </property>
@@ -15,33 +15,98 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
+    <item row="1" column="0">
+     <widget class="QTextEdit" name="sourceEditor">
+      <property name="tabStopDistance">
+       <double>40.000000000000000</double>
+      </property>
+      <property name="acceptRichText">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="btOpenFile">
         <property name="text">
-         <string/>
+         <string>Open</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="btSaveFile">
         <property name="text">
-         <string/>
+         <string>Save</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_3">
+       <widget class="QPushButton" name="btNewFile">
         <property name="text">
-         <string/>
+         <string>New</string>
         </property>
        </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btConsoleView">
+        <property name="text">
+         <string>Console</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btCompileNRun">
+        <property name="text">
+         <string>Compile and run</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </item>
-    <item row="1" column="0">
-     <widget class="QTextEdit" name="textEdit"/>
+    <item row="2" column="0">
+     <widget class="QGroupBox" name="consoleWidget">
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>300</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>Output console:</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QTextBrowser" name="cOut"/>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="cIn">
+         <property name="placeholderText">
+          <string>Input (Hit &quot;enter&quot; to send)</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </item>
    </layout>
   </widget>

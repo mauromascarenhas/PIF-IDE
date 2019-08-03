@@ -27,12 +27,14 @@ CONFIG += c++11
 INCLUDEPATH += ./nmainwindow
 
 SOURCES += \
+        highlighter/highlighter.cpp \
         main.cpp \
         nmainwindow/titlebar.cpp \
         nmainwindow/nmainwindow.cpp \
         editorwindow.cpp
 
 HEADERS += \
+        highlighter/highlighter.h \
         nmainwindow/titlebar.h \
         nmainwindow/nmainwindow.h \
         editorwindow.h
