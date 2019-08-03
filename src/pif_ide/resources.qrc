@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/new.svg</file>
+        <file>images/open.svg</file>
+        <file>images/save.svg</file>
+        <file>images/console.svg</file>
+        <file>images/console_alt.svg</file>
+        <file>images/run.svg</file>
+        <file>images/run_alt.svg</file>
+        <file>images/settings.svg</file>
+        <file>images/settings_alt.svg</file>
+        <file>images/abort_run.svg</file>
+        <file>images/about.svg</file>
+        <file>images/about_alt.svg</file>
+    </qresource>
+</RCC>

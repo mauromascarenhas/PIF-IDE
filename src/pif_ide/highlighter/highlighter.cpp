@@ -1,4 +1,4 @@
-#include "highlighter.h"
+﻿#include "highlighter.h"
 
 Highlighter::Highlighter(QTextDocument *parent):
     QSyntaxHighlighter (parent)
@@ -31,7 +31,8 @@ Highlighter::Highlighter(QTextDocument *parent):
     rule.format = quotationFormat;
     highlightingRules.append(rule);
 
-    booleanFormat.setForeground(Qt::darkMagenta);
+    booleanFormat.setFontWeight(QFont::Bold);
+    booleanFormat.setForeground(Qt::darkYellow);
     rule.pattern = QRegularExpression(QStringLiteral("\\b(verdadeiro|falso)\\b"));
     rule.format = booleanFormat;
     highlightingRules.append(rule);
