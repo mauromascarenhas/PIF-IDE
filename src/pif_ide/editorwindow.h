@@ -7,13 +7,18 @@
 #include <QProcess>
 #include <QShortcut>
 #include <QFileInfo>
+#include <QSettings>
+#include <QCheckBox>
 #include <QTextStream>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QMainWindow>
 #include <QKeySequence>
+#include <QStandardPaths>
 
 #include "nmainwindow.h"
+#include "aboutwindow.h"
+#include "settingswindow.h"
 #include "highlighter/highlighter.h"
 
 namespace Ui {
@@ -36,9 +41,16 @@ private:
     void runProject();
 
     void setupEditor();
+    void setupEnvVars();
     void createShortcuts();
 
     bool hasChanged;
+
+    QString pifcPath;
+    QString cppPath;
+    QString cPath;
+    QString javaPath;
+    QString javacPath;
 
     QFile currentFile;
     QProcess buildProcess;
@@ -47,11 +59,14 @@ private:
 
     Highlighter *highlighter;
 
+    AboutWindow *frmAbout;
+    SettingsWindow *frmSettings;
+
 private slots:
     void sourceChanged();
 
     void openFile();
-    void saveFile();
+    bool saveFile();
     void newFile();
 
     void increaseFontSize();

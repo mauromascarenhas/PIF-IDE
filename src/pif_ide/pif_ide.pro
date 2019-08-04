@@ -27,22 +27,28 @@ CONFIG += c++11
 INCLUDEPATH += ./nmainwindow
 
 SOURCES += \
+        aboutwindow.cpp \
         highlighter/highlighter.cpp \
         main.cpp \
         nmainwindow/titlebar.cpp \
         nmainwindow/nmainwindow.cpp \
-        editorwindow.cpp
+        editorwindow.cpp \
+        settingswindow.cpp
 
 HEADERS += \
+        aboutwindow.h \
         highlighter/highlighter.h \
         nmainwindow/titlebar.h \
         nmainwindow/nmainwindow.h \
-        editorwindow.h
+        editorwindow.h \
+        settingswindow.h
 
 FORMS += \
+        aboutwindow.ui \
         nmainwindow/titlebar.ui \
         nmainwindow/nmainwindow.ui \
-        editorwindow.ui
+        editorwindow.ui \
+        settingswindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

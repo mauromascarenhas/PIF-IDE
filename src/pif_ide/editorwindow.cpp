@@ -13,7 +13,11 @@ EditorWindow::EditorWindow(QWidget *parent) :
 
     hasChanged = false;
 
+    frmAbout = new AboutWindow();
+    frmSettings = new SettingsWindow();
+
     setupEditor();
+    setupEnvVars();
     createShortcuts();
 
     // Connects signals and slots
@@ -30,7 +34,10 @@ EditorWindow::EditorWindow(QWidget *parent) :
 
     connect(ui->sourceEditor, SIGNAL(textChanged()), this, SLOT(sourceChanged()));
 
-    // TODO: Info and Settings window
+    //BUG: Wrong titlebar display due to nmainwindow
+    connect(ui->btAbout, SIGNAL(clicked(bool)), frmAbout, SLOT(show()));
+    connect(ui->btSettings, SIGNAL(clicked(bool)), frmSettings, SLOT(show()));
+
     // TODO: Load settings (and store them as well)
 
     // Hides output console
@@ -49,12 +56,74 @@ EditorWindow::~EditorWindow()
 
 void EditorWindow::setupEditor(){
     QFont font;
-//    font.setFamily("Courier");
+    //font.setFamily("Courier");
     font.setFixedPitch(true);
     font.setPointSize(12);
 
     ui->sourceEditor->setFont(font);
     highlighter = new Highlighter(ui->sourceEditor->document());
+}
+
+void EditorWindow::setupEnvVars(){
+    QSettings settings("Nintersoft", "PIF IDE");
+    if (settings.childGroups().contains("environment variables")){
+        settings.beginGroup("environment variables");
+
+        cPath = settings.value("c_path", "").toString();
+        cppPath = settings.value("cpp_path", "").toString();
+        javaPath = settings.value("java_path", "").toString();
+        pifcPath = settings.value("pifc_path", "").toString();
+        javacPath = settings.value("javac_path", "").toString();
+    }
+    else {
+        settings.beginGroup("environment variables");
+
+        cPath = QStandardPaths::findExecutable("gcc");
+        cppPath = QStandardPaths::findExecutable("g++");
+        javaPath = QStandardPaths::findExecutable("java");
+        pifcPath = QStandardPaths::findExecutable("pifc");
+        javacPath = QStandardPaths::findExecutable("javac");
+
+        QStringList aPaths;
+        if (pifcPath.isEmpty() &&
+                !(aPaths = QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation)).isEmpty())
+            pifcPath = QStandardPaths::findExecutable("pifc", QStringList() << aPaths[0] + QDir::separator() + "Nintersoft" + QDir::separator() + "PIF" + QDir::separator());
+
+        settings.setValue("c_path", cPath);
+        settings.setValue("cpp_path", cppPath);
+        settings.setValue("java_path", javaPath);
+        settings.setValue("pifc_path", pifcPath);
+        settings.setValue("javac_path", javacPath);
+    }
+    settings.endGroup();
+
+    if (pifcPath.isEmpty()){
+        ui->btCompileNRun->setEnabled(false);
+
+        settings.beginGroup("warnings");
+        if (!settings.value("no_pifc", false).toBool()){
+            QCheckBox *cb = new QCheckBox(this);
+            cb->setText(tr("Do not show this message again!"));
+
+            QMessageBox message;
+            message.setIcon(QMessageBox::Warning);
+            message.setText(tr("It was not possible to find a PIF compiler in this machine."
+                               " Any execution operation will be available until a valid path to a PIF compiler is set."));
+            message.setStandardButtons(QMessageBox::Ok);
+            message.setCheckBox(cb);
+
+            connect(cb, &QCheckBox::toggled, [this](bool checked){
+                QSettings settings("Nintersoft", "PIF IDE");
+                settings.beginGroup("warnings");
+                settings.setValue("no_pifc", checked);
+                settings.endGroup();
+            });
+
+            message.exec();
+            delete cb;
+        }
+        settings.endGroup();
+    }
 }
 
 void EditorWindow::createShortcuts(){
@@ -96,8 +165,13 @@ void EditorWindow::openFile(){
                                         " before continuing?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
                         == QMessageBox::Cancel) return;
 
-    // WARNING: It is not checking if file has been saved!
-    if (alt > 0 && alt == QMessageBox::Yes) saveFile();
+    if (alt > 0 && alt == QMessageBox::Yes)
+        while (!saveFile() &&
+                QMessageBox::question(this, tr("Confirmation | PIF IDE"),
+                                      tr("Seems that you have aborted the operation of saving the current project."
+                                         " Would you like to reconsider and try to save it again?"),
+                                      QMessageBox::Yes, QMessageBox::No)
+                    == QMessageBox::Yes);
 
     if (currentFile.isOpen()) currentFile.close();
 
@@ -123,8 +197,8 @@ void EditorWindow::openFile(){
     }
 }
 
-void EditorWindow::saveFile(){
-    if (!hasChanged) return;
+bool EditorWindow::saveFile(){
+    if (!hasChanged) return true;
 
     if (currentFile.isOpen()){
         currentFile.close();
@@ -141,18 +215,18 @@ void EditorWindow::saveFile(){
                                         " This may cause your current project to be overwritten by other programs."
                                         " Would you like us to try again?"), QMessageBox::Yes, QMessageBox::No)
                    == QMessageBox::Yes);
-            return;
 
             hasChanged = false;
             this->setWindowTitle(tr("%1.pifc | PIF IDE").arg(QFileInfo(currentFile).baseName()));
             connect(ui->sourceEditor, SIGNAL(textChanged()), this, SLOT(sourceChanged()));
+            return true;
         }
         else {
             QMessageBox::critical(this, tr("Error | PIF IDE"),
                                   tr("It was not possible to truncate the specified filename so as to save the"
                                      " current state of the project (It was not possible to stablish the file"
                                      " lock as well). Please, try again later."), QMessageBox::Ok);
-            return;
+            return false;
         }
     }
 
@@ -166,7 +240,7 @@ void EditorWindow::saveFile(){
                                   tr("It was not possible to create the specified file. Please, make sure the file %1 "
                                      "is readable/writeable.").arg(currentFile.fileName()),
                                   QMessageBox::Ok, QMessageBox::NoButton);
-            return;
+            return false;
         }
 
         QTextStream stream(&currentFile);
@@ -185,7 +259,9 @@ void EditorWindow::saveFile(){
         hasChanged = false;
         this->setWindowTitle(tr("%1.pifc | PIF IDE").arg(QFileInfo(currentFile).baseName()));
         connect(ui->sourceEditor, SIGNAL(textChanged()), this, SLOT(sourceChanged()));
+        return true;
     }
+    else return false;
 }
 
 void EditorWindow::newFile(){
@@ -195,8 +271,13 @@ void EditorWindow::newFile(){
                                         " before continuing?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
                         == QMessageBox::Cancel) return;
 
-    // WARNING: It is not checking if file has been saved!
-    if (alt > 0 && alt == QMessageBox::Yes) saveFile();
+    if (alt > 0 && alt == QMessageBox::Yes)
+        while (!saveFile() &&
+                QMessageBox::question(this, tr("Confirmation | PIF IDE"),
+                                      tr("Seems that you have aborted the operation of saving the current project."
+                                         " Would you like to reconsider and try to save it again?"),
+                                      QMessageBox::Yes, QMessageBox::No)
+                    == QMessageBox::Yes);
 
     if (currentFile.isOpen()) currentFile.close();
 
@@ -248,18 +329,18 @@ void EditorWindow::increaseFontSize(){
 }
 
 void EditorWindow::sendUserInput(){
-    ui->cOut->append(QString("%1").arg(ui->cIn->text()));
+    ui->cOut->append(QString("<font color=\"red\">%1</font>").arg(ui->cIn->text()));
     ui->cIn->clear();
 }
 
 void EditorWindow::buildNRun(){
-    if (compileProject())
-        runProject();
+    if (compileProject()) runProject();
 }
 
 void EditorWindow::abortProcess(){
     ui->btAbort->setEnabled(false);
     ui->btCompileNRun->setEnabled(true);
 
-    // TODO: Implement
+    if (buildProcess.state() != QProcess::NotRunning) buildProcess.kill();
+    else if (executeProcess.state() != QProcess::NotRunning) executeProcess.kill();
 }
