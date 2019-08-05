@@ -13,8 +13,8 @@ EditorWindow::EditorWindow(QWidget *parent) :
 
     hasChanged = false;
 
-    frmAbout = new AboutWindow();
-    frmSettings = new SettingsWindow();
+    frmAbout = nullptr;
+    frmSettings = nullptr;
 
     setupEditor();
     setupEnvVars();
@@ -34,14 +34,22 @@ EditorWindow::EditorWindow(QWidget *parent) :
 
     connect(ui->sourceEditor, SIGNAL(textChanged()), this, SLOT(sourceChanged()));
 
-    //BUG: Wrong titlebar display due to nmainwindow
-    connect(ui->btAbout, SIGNAL(clicked(bool)), frmAbout, SLOT(show()));
-    connect(ui->btSettings, SIGNAL(clicked(bool)), frmSettings, SLOT(show()));
+    connect(ui->btAbout, SIGNAL(clicked(bool)), this, SLOT(openAboutForm()));
+    connect(ui->btSettings, SIGNAL(clicked(bool)), this, SLOT(openSettingsForm()));
 
-    // TODO: Load settings (and store them as well)
+    connect(&buildProcess, SIGNAL(readyReadStandardError()), this, SLOT(compilerError()));
+    connect(&buildProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(compilerOutput()));
+    connect(&buildProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(compilerExited(int,QProcess::ExitStatus)));
+
+    connect(&executeProcess, SIGNAL(readyReadStandardError()), this, SLOT(executionError()));
+    connect(&executeProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(executionOutput()));
+    connect(&executeProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(executionExited(int,QProcess::ExitStatus)));
 
     // Hides output console
     ui->btConsoleView->setChecked(false);
+
+    // Sets focus on sourceEditor
+    ui->sourceEditor->setFocus();
 }
 
 EditorWindow::~EditorWindow()
@@ -54,11 +62,34 @@ EditorWindow::~EditorWindow()
     delete ui;
 }
 
+void EditorWindow::openAboutForm(){
+    if (frmAbout) delete frmAbout;
+
+    frmAbout = new AboutWindow();
+    frmAbout->show();
+}
+
+void EditorWindow::openSettingsForm(){
+    if (frmSettings) delete frmSettings;
+
+    frmSettings = new SettingsWindow();
+    frmSettings->show();
+}
+
 void EditorWindow::setupEditor(){
     QFont font;
-    //font.setFamily("Courier");
+    QSettings settings("Nintersoft", "PIF IDE");
+    if (settings.childGroups().contains("editor")){
+        settings.beginGroup("editor");
+        font.setFamily(settings.value("font_family", "Segoe UI").toString());
+        font.setPointSize(settings.value("font_size", 12).toInt());
+        settings.endGroup();
+    }
+    else {
+        font.setFamily("Segoe UI");
+        font.setPointSize(12);
+    }
     font.setFixedPitch(true);
-    font.setPointSize(12);
 
     ui->sourceEditor->setFont(font);
     highlighter = new Highlighter(ui->sourceEditor->document());
@@ -69,7 +100,7 @@ void EditorWindow::setupEnvVars(){
     if (settings.childGroups().contains("environment variables")){
         settings.beginGroup("environment variables");
 
-        cPath = settings.value("c_path", "").toString();
+        cPath = settings.value(settings.value("c_uses_cpp", false).toBool() ? "cpp_path" : "c_path", "").toString();
         cppPath = settings.value("cpp_path", "").toString();
         javaPath = settings.value("java_path", "").toString();
         pifcPath = settings.value("pifc_path", "").toString();
@@ -94,6 +125,11 @@ void EditorWindow::setupEnvVars(){
         settings.setValue("java_path", javaPath);
         settings.setValue("pifc_path", pifcPath);
         settings.setValue("javac_path", javacPath);
+
+        if (cPath.isEmpty() && !cppPath.isEmpty()){
+            cPath = cppPath;
+            settings.setValue("c_uses_cpp", true);
+        }
     }
     settings.endGroup();
 
@@ -145,8 +181,10 @@ void EditorWindow::createShortcuts(){
 
     connect(shortCuts[5], SIGNAL(activated()), ui->btConsoleView, SLOT(toggle()));
 
-    connect(shortCuts[6], SIGNAL(activated()), this, SLOT(buildNRun()));
-    connect(shortCuts[7], SIGNAL(activated()), this, SLOT(abortProcess()));
+    if (!pifcPath.isEmpty()){
+        connect(shortCuts[6], SIGNAL(activated()), this, SLOT(buildNRun()));
+        connect(shortCuts[7], SIGNAL(activated()), this, SLOT(abortProcess()));
+    }
 }
 
 void EditorWindow::sourceChanged(){
@@ -288,20 +326,20 @@ void EditorWindow::newFile(){
     connect(ui->sourceEditor, SIGNAL(textChanged()), this, SLOT(sourceChanged()));
 }
 
-bool EditorWindow::compileProject(){
+void EditorWindow::compileProject(){
     //WARNING: Has to check if saved
 
     ui->btAbort->setEnabled(true);
     ui->btCompileNRun->setEnabled(false);
 
-    //TODO: Implement
+    ui->cOut->append(QString("<font color=\"black\" font-weight=\"bold\">[ %1 ] :</font>").arg(tr("COMPILER OUTPUT")));
 
-    //TODO: Show console on error
-    return true;
+    //TODO: Implement
 }
 
 void EditorWindow::runProject(){
-    //WARNING: Has to check for output
+    //TODO: Implement (Check for filename + final compiler)
+    //TODO: Check if java and compile it as well :(
 
     ui->btAbort->setEnabled(true);
     ui->btCompileNRun->setEnabled(false);
@@ -329,12 +367,18 @@ void EditorWindow::increaseFontSize(){
 }
 
 void EditorWindow::sendUserInput(){
-    ui->cOut->append(QString("<font color=\"red\">%1</font>").arg(ui->cIn->text()));
+    if (executeProcess.state() == QProcess::NotRunning)
+        ui->cOut->append(QString("<font color=\"red\">%1</font>").arg(ui->cIn->text()));
+    else {
+        ui->cOut->append(QString("<font color=\"blue\">%1</font>").arg(ui->cIn->text()));
+        executeProcess.write(ui->cIn->text().toUtf8());
+    }
     ui->cIn->clear();
 }
 
 void EditorWindow::buildNRun(){
-    if (compileProject()) runProject();
+    ui->cOut->clear();
+    compileProject();
 }
 
 void EditorWindow::abortProcess(){
@@ -343,4 +387,36 @@ void EditorWindow::abortProcess(){
 
     if (buildProcess.state() != QProcess::NotRunning) buildProcess.kill();
     else if (executeProcess.state() != QProcess::NotRunning) executeProcess.kill();
+}
+
+void EditorWindow::compilerError(){
+    if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
+    ui->cOut->append(QString("<font color=\"orange\" font-weight=\"bold\">%1</font>").arg(QString::fromUtf8(buildProcess.readAllStandardError())));
+}
+
+void EditorWindow::compilerOutput(){
+    if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
+    ui->cOut->append(QString("<font color=\"black\" font-weight=\"bold\">%1</font>").arg(QString::fromUtf8(buildProcess.readAllStandardOutput())));
+}
+
+void EditorWindow::compilerExited(int exitCode, QProcess::ExitStatus status){
+    if (exitCode || status == QProcess::CrashExit){
+        ui->cOut->append(QString("<font color=\"orange\" font-weight=\"bold\">%1</font>").arg(tr("Compiler exited with code %1.").arg(exitCode)));
+        return;
+    }
+    runProject();
+}
+
+void EditorWindow::executionError(){
+    if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
+    ui->cOut->append(QString("<font color=\"black\" font-weight=\"bold\">%1</font>").arg(QString::fromUtf8(executeProcess.readAllStandardError())));
+}
+
+void EditorWindow::executionOutput(){
+    if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
+    ui->cOut->append(QString("<font color=\"black\">%1</font>").arg(QString::fromUtf8(buildProcess.readAllStandardOutput())));
+}
+
+void EditorWindow::executionExited(int exitCode, QProcess::ExitStatus){
+    ui->cOut->append(QString("<font color=\"black\" font-weight=\"bold\">%1</font>").arg(tr("\nProcess exited with code %1.").arg(exitCode)));
 }

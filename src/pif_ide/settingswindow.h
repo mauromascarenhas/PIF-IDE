@@ -2,7 +2,9 @@
 #define SETTINGSWINDOW_H
 
 #include <QSettings>
+#include <QFileDialog>
 #include <QMainWindow>
+#include <QMessageBox>
 
 #include "nmainwindow.h"
 
@@ -23,8 +25,16 @@ private:
 
     void loadSettings();
 
-protected:
-    void showEvent(QShowEvent *event);
+private slots:
+    void saveSettings();
+    void resetSettings();
+    void useCppAsC(bool checked);
+
+    void getCPath();
+    void getCppPath();
+    void getJavaPath();
+    void getPifcPath();
+    void getJavacPath();
 };
 
 #endif // SETTINGSWINDOW_H

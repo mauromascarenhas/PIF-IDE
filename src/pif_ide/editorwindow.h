@@ -37,7 +37,7 @@ private:
     Ui::EditorWindow *ui;
 
 private:
-    bool compileProject();
+    void compileProject();
     void runProject();
 
     void setupEditor();
@@ -63,6 +63,9 @@ private:
     SettingsWindow *frmSettings;
 
 private slots:
+    void openAboutForm();
+    void openSettingsForm();
+
     void sourceChanged();
 
     void openFile();
@@ -76,6 +79,14 @@ private slots:
 
     void buildNRun();
     void abortProcess();
+
+    void compilerError();
+    void compilerOutput();
+    void compilerExited(int exitCode, QProcess::ExitStatus status);
+
+    void executionError();
+    void executionOutput();
+    void executionExited(int exitCode, QProcess::ExitStatus status);
 };
 
 #endif // EDITORWINDOW_H

@@ -11,6 +11,8 @@ AboutWindow::AboutWindow(QWidget *parent) :
     // Otherwise, the window resizing feature will not work
     NMainWindow::setCustomWidgets(ui->centralWidget, ui->statusBar);
     NMainWindow::setMaximizeButtonEnabled(false);
+
+    //TODO: Load compiler data
 }
 
 AboutWindow::~AboutWindow()

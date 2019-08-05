@@ -17,6 +17,12 @@
    <layout class="QGridLayout" name="gridLayout">
     <item row="1" column="0">
      <widget class="QTextEdit" name="sourceEditor">
+      <property name="font">
+       <font>
+        <family>Segoe UI</family>
+        <pointsize>12</pointsize>
+       </font>
+      </property>
       <property name="tabStopDistance">
        <double>40.000000000000000</double>
       </property>
