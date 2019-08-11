@@ -13,6 +13,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QMainWindow>
+#include <QInputDialog>
 #include <QKeySequence>
 #include <QStandardPaths>
 
@@ -37,7 +38,15 @@ private:
     Ui::EditorWindow *ui;
 
 private:
+    enum Executor{
+        NONE,
+        C,
+        CPP,
+        JAVA
+    } curExec;
+
     void compileProject();
+    void compileObject();
     void runProject();
 
     void setupEditor();
@@ -54,6 +63,7 @@ private:
 
     QFile currentFile;
     QProcess buildProcess;
+    QProcess compileProcess;
     QProcess executeProcess;
     QList<QShortcut *> shortCuts;
 
@@ -77,8 +87,14 @@ private slots:
 
     void sendUserInput();
 
+    void changeExec();
+
     void buildNRun();
     void abortProcess();
+
+    void builderError();
+    void builderOutput();
+    void builderExited(int exitCode, QProcess::ExitStatus status);
 
     void compilerError();
     void compilerOutput();

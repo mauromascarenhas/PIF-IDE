@@ -1,7 +1,12 @@
 #ifndef ABOUTWINDOW_H
 #define ABOUTWINDOW_H
 
+#include <QDir>
+#include <QUrl>
+#include <QSettings>
 #include <QMainWindow>
+#include <QMessageBox>
+#include <QDesktopServices>
 
 #include "nmainwindow.h"
 
@@ -19,6 +24,14 @@ public:
 
 private:
     Ui::AboutWindow *ui;
+
+    void loadCompilerData();
+
+private slots:
+    void openOnlineHelp();
+    void openOnlineSamples();
+    void openSourceSamples();
+    void openNSOSL();
 };
 
 #endif // ABOUTWINDOW_H

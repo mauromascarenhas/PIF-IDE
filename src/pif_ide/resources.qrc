@@ -12,5 +12,6 @@
         <file>images/abort_run.svg</file>
         <file>images/about.svg</file>
         <file>images/about_alt.svg</file>
+        <file>images/change_exec.svg</file>
     </qresource>
 </RCC>
