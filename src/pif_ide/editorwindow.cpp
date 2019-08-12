@@ -16,6 +16,10 @@ EditorWindow::EditorWindow(QWidget *parent) :
     frmAbout = nullptr;
     frmSettings = nullptr;
 
+    buildProcess = nullptr;
+    compileProcess = nullptr;
+    executeProcess = nullptr;
+
     setupEditor();
     setupEnvVars();
     createShortcuts();
@@ -39,21 +43,6 @@ EditorWindow::EditorWindow(QWidget *parent) :
     connect(ui->btAbout, SIGNAL(clicked(bool)), this, SLOT(openAboutForm()));
     connect(ui->btSettings, SIGNAL(clicked(bool)), this, SLOT(openSettingsForm()));
 
-    connect(&buildProcess, SIGNAL(readyRead()), this, SLOT(executionOutput()));
-    connect(&buildProcess, SIGNAL(readyReadStandardError()), this, SLOT(builderError()));
-    connect(&buildProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(builderOutput()));
-    connect(&buildProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(builderExited(int,QProcess::ExitStatus)));
-
-    connect(&compileProcess, SIGNAL(readyRead()), this, SLOT(executionOutput()));
-    connect(&compileProcess, SIGNAL(readyReadStandardError()), this, SLOT(compilerError()));
-    connect(&compileProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(compilerOutput()));
-    connect(&compileProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(compilerExited(int,QProcess::ExitStatus)));
-
-    connect(&executeProcess, SIGNAL(readyRead()), this, SLOT(executionOutput()));
-    connect(&executeProcess, SIGNAL(readyReadStandardError()), this, SLOT(executionError()));
-    connect(&executeProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(executionOutput()));
-    connect(&executeProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(executionExited(int,QProcess::ExitStatus)));
-
     // Hides output console
     ui->btConsoleView->setChecked(false);
 
@@ -63,6 +52,8 @@ EditorWindow::EditorWindow(QWidget *parent) :
 
 EditorWindow::~EditorWindow()
 {
+    abortProcess();
+
     delete highlighter;
 
     for (QShortcut *shortcut : shortCuts) delete shortcut;
@@ -127,7 +118,9 @@ void EditorWindow::setupEnvVars(){
         QStringList aPaths;
         if (pifcPath.isEmpty() &&
                 !(aPaths = QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation)).isEmpty())
-            pifcPath = QStandardPaths::findExecutable("pifc", QStringList() << aPaths[0] + QDir::separator() + "Nintersoft" + QDir::separator() + "PIF" + QDir::separator());
+            pifcPath = QStandardPaths::findExecutable("pifc", QStringList() << aPaths[0] + QDir::separator() + "Nintersoft" + QDir::separator() + "PIF" + QDir::separator()
+                                                                            << aPaths[0] + QDir::separator() + "Projeto PIF" + QDir::separator() + "PIF" + QDir::separator()
+                                                                            << aPaths[0] + QDir::separator() + "PIF" + QDir::separator());
 
         settings.setValue("c_path", cPath);
         settings.setValue("cpp_path", cppPath);
@@ -374,25 +367,45 @@ void EditorWindow::compileProject(){
     ui->btCompileNRun->setEnabled(false);
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
 
-    ui->cOut->append(QString("<font color=\"black\" font-weight=\"bold\">[ %1 ] :</font>").arg(tr("PIF COMPILER OUTPUT")));
+    ui->cOut->append(QString("<font color=\"black\"><strong>[ %1 ] :</strong></font>").arg(tr("PIF COMPILER OUTPUT")));
 
-    buildProcess.setProgram(pifcPath);
+    if (buildProcess){
+        disconnect(buildProcess, SIGNAL(readyReadStandardError()), this, SLOT(builderError()));
+        disconnect(buildProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(builderOutput()));
+        disconnect(buildProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(builderExited(int,QProcess::ExitStatus)));
+        delete buildProcess;
+    }
+
+    buildProcess = new QProcess(this);
+    buildProcess->setProgram(pifcPath);
+    buildProcess->setProcessChannelMode(QProcess::SeparateChannels);
+
+    connect(buildProcess, SIGNAL(readyReadStandardError()), this, SLOT(builderError()));
+    connect(buildProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(builderOutput()));
+    connect(buildProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(builderExited(int,QProcess::ExitStatus)));
+
+    QFileInfo currentFileInfo(currentFile.fileName());
+    QString objectPath = currentFileInfo.absolutePath() + QDir::separator() + currentFileInfo.baseName();
+
     switch (curExec) {
         case C:
-            buildProcess.setArguments(QStringList() << "-f" << "-l" << "c" << currentFile.fileName());
+            buildProcess->setArguments(QStringList() << "-f" << "-l" << "c" << currentFile.fileName()
+                                                     << "-o" << (objectPath + ".c"));
             break;
         case CPP:
-            buildProcess.setArguments(QStringList() << "-f" << "-l" << "cpp" << currentFile.fileName());
+            buildProcess->setArguments(QStringList() << "-f" << "-l" << "cpp" << currentFile.fileName()
+                                                     << "-o" << (objectPath + ".cpp"));
             break;
         default:
-            buildProcess.setArguments(QStringList() << "-f" << "-l" << "java" << currentFile.fileName());
+            buildProcess->setArguments(QStringList() << "-f" << "-l" << "java" << currentFile.fileName()
+                                                     << "-o" << (objectPath + ".java"));
             break;
     }
-    buildProcess.start();
+    buildProcess->start();
 }
 
 void EditorWindow::compileObject(){
-    ui->cOut->append(QString("<font color=\"black\" font-weight=\"bold\">[ %1 ] :</font>").arg(tr("COMPILER OUTPUT")));
+    ui->cOut->append(QString("<font color=\"black\"><strong>[ %1 ] :</strong></font>").arg(tr("COMPILER OUTPUT")));
 
     QFileInfo currentFileInfo(currentFile.fileName());
     QString objectPath = currentFileInfo.absolutePath() + QDir::separator() + currentFileInfo.baseName();
@@ -402,51 +415,68 @@ void EditorWindow::compileObject(){
     QString compileExt = "";
 #endif
 
+    if (compileProcess){
+        disconnect(compileProcess, SIGNAL(readyReadStandardError()), this, SLOT(compilerError()));
+        disconnect(compileProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(compilerOutput()));
+        disconnect(compileProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(compilerExited(int,QProcess::ExitStatus)));
+        delete compileProcess;
+    }
+
+    compileProcess = new QProcess(this);
+    compileProcess->setProcessChannelMode(QProcess::SeparateChannels);
+
+    connect(compileProcess, SIGNAL(readyReadStandardError()), this, SLOT(compilerError()));
+    connect(compileProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(compilerOutput()));
+    connect(compileProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(compilerExited(int,QProcess::ExitStatus)));
+
     switch (curExec) {
         case C:
             if (cPath.isEmpty()) {
                 if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
-                ui->cOut->append(QString("<font color=\"red\" font-weight=\"bold\">%1</font>").arg(tr("%1 compiler path is not set.").arg("C")));
+                ui->cOut->append(QString("<font color=\"red\"><strong>%1</strong></font>").arg(tr("%1 compiler path is not set.").arg("C")));
                 abortProcess();
                 return;
             }
-            compileProcess.setProgram(cPath);
-            compileProcess.setArguments(QStringList() << (objectPath + ".c")
+            compileProcess->setProgram(cPath);
+            compileProcess->setArguments(QStringList() << (objectPath + ".c")
                                         << "-o" << (objectPath + compileExt));
             break;
         case CPP:
             if (cppPath.isEmpty()) {
                 if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
-                ui->cOut->append(QString("<font color=\"red\" font-weight=\"bold\">%1</font>").arg(tr("%1 compiler path is not set.").arg("C++")));
+                ui->cOut->append(QString("<font color=\"red\"><strong>%1</strong></font>").arg(tr("%1 compiler path is not set.").arg("C++")));
                 abortProcess();
                 return;
             }
-            compileProcess.setProgram(javaPath);
-            compileProcess.setArguments(QStringList() << (objectPath + ".cpp")
+            compileProcess->setProgram(cppPath);
+            compileProcess->setArguments(QStringList() << (objectPath + ".cpp")
                                         << "-o" << (objectPath + compileExt));
             break;
         case JAVA:
             if (javacPath.isEmpty()) {
                 if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
-                ui->cOut->append(QString("<font color=\"red\" font-weight=\"bold\">%1</font>").arg(tr("%1 compiler path is not set.").arg("Java")));
+                ui->cOut->append(QString("<font color=\"orange\"></strong>%1<strong></font>").arg(tr("%1 compiler path is not set.").arg("Java")));
                 abortProcess();
                 return;
             }
-            compileProcess.setProgram(javacPath);
-            compileProcess.setArguments(QStringList() << (objectPath + ".java"));
+            compileProcess->setProgram(javacPath);
+            compileProcess->setArguments(QStringList() << (objectPath + ".java"));
             break;
         default:
             if (javacPath.isEmpty()) {
                 if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
-                ui->cOut->append(QString("<font color=\"red\" font-weight=\"bold\">%1</font>").arg(tr("There is no final compiler defined!")));
+                ui->cOut->append(QString("<font color=\"orange\"><strong>%1</strong></font>").arg(tr("There is no final compiler defined!")));
                 abortProcess();
                 return;
             }
     }
-    compileProcess.start();
+    compileProcess->start();
 }
 
 void EditorWindow::runProject(){
+    ui->cOut->append(QString("<font color=\"black\"><strong>[ %1 ] :</strong></font>").arg(tr("APPLICATION OUTPUT")));
+    ui->cOut->append("");
+
     ui->btAbort->setEnabled(true);
     ui->btCompileNRun->setEnabled(false);
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
@@ -459,29 +489,43 @@ void EditorWindow::runProject(){
 
     if (!QFile::exists(objectPath)) {
         if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
-        ui->cOut->append(QString("<font color=\"red\" font-weight=\"bold\">%1</font>").arg(tr("There is no output executable to run. Expected : '%1'").arg(objectPath)));
+        ui->cOut->append(QString("<font color=\"orange\"></strong>%1</strong></font>").arg(tr("There is no output executable to run. Expected : '%1'").arg(objectPath)));
         abortProcess();
         return;
     }
+
+    if (executeProcess){
+        disconnect(executeProcess, SIGNAL(readyReadStandardError()), this, SLOT(executionError()));
+        disconnect(executeProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(executionOutput()));
+        disconnect(executeProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(executionExited(int,QProcess::ExitStatus)));
+        delete executeProcess;
+    }
+
+    executeProcess = new QProcess(this);
+    executeProcess->setProcessChannelMode(QProcess::SeparateChannels);
+
+    connect(executeProcess, SIGNAL(readyReadStandardError()), this, SLOT(executionError()));
+    connect(executeProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(executionOutput()));
+    connect(executeProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(executionExited(int,QProcess::ExitStatus)));
 
     switch (curExec) {
         case JAVA:
             if (javaPath.isEmpty()) {
                 if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
-                ui->cOut->append(QString("<font color=\"red\" font-weight=\"bold\">%1</font>").arg(tr("There is no JVM set. Execution aborted.")));
+                ui->cOut->append(QString("<font color=\"orange\"><strong>%1</strong></font>").arg(tr("There is no JVM set. Execution aborted.")));
                 abortProcess();
                 return;
             }
-            executeProcess.setProgram(javaPath);
-            executeProcess.setArguments(QStringList() << "-cp" << currentFileInfo.absolutePath()
+            executeProcess->setProgram(javaPath);
+            executeProcess->setArguments(QStringList() << "-cp" << currentFileInfo.absolutePath()
                                             << currentFileInfo.baseName());
             break;
         default:
-            executeProcess.setProgram(objectPath);
-            executeProcess.setArguments(QStringList());
+            executeProcess->setProgram(objectPath);
+            executeProcess->setArguments(QStringList());
             break;
     }
-    executeProcess.start();
+    executeProcess->start(QIODevice::ReadWrite | QIODevice::Unbuffered);
 }
 
 void EditorWindow::reduceFontSize(){
@@ -503,11 +547,11 @@ void EditorWindow::increaseFontSize(){
 }
 
 void EditorWindow::sendUserInput(){
-    if (executeProcess.state() == QProcess::NotRunning)
+    if (executeProcess->state() == QProcess::NotRunning)
         ui->cOut->append(QString("<font color=\"red\">%1</font>").arg(ui->cIn->text()));
     else {
         ui->cOut->append(QString("<font color=\"blue\">%1</font>").arg(ui->cIn->text()));
-        executeProcess.write(ui->cIn->text().toUtf8());
+        executeProcess->write(ui->cIn->text().toUtf8() + "\n");
     }
     ui->cIn->clear();
 }
@@ -554,59 +598,66 @@ void EditorWindow::abortProcess(){
     ui->btAbort->setEnabled(false);
     ui->btCompileNRun->setEnabled(true);
 
-    if (buildProcess.state() != QProcess::NotRunning) buildProcess.kill();
-    if (compileProcess.state() != QProcess::NotRunning) compileProcess.kill();
-    if (executeProcess.state() != QProcess::NotRunning) executeProcess.kill();
+    if (buildProcess && buildProcess->state() != QProcess::NotRunning) buildProcess->kill();
+    if (compileProcess && compileProcess->state() != QProcess::NotRunning) compileProcess->kill();
+    if (executeProcess && executeProcess->state() != QProcess::NotRunning) executeProcess->kill();
 }
 
 void EditorWindow::builderError(){
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
-    ui->cOut->append(QString("<font color=\"orange\" font-weight=\"bold\">%1</font>").arg(QString::fromUtf8(buildProcess.readAllStandardError())));
+    ui->cOut->append(QString("<font color=\"orange\">%1</font>").arg(QString::fromUtf8(buildProcess->readAllStandardError())));
 }
 
 void EditorWindow::builderOutput(){
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
-    ui->cOut->append(QString("<font color=\"black\" font-weight=\"bold\">%1</font>").arg(QString::fromUtf8(buildProcess.readAllStandardOutput())));
+    ui->cOut->append(QString("<font color=\"black\">%1</font>").arg(QString::fromUtf8(buildProcess->readAllStandardOutput())));
 }
 
 void EditorWindow::builderExited(int exitCode, QProcess::ExitStatus status){
     if (exitCode || status == QProcess::CrashExit){
-        ui->cOut->append(QString("<font color=\"orange\" font-weight=\"bold\">%1</font>").arg(tr("PIF Compiler exited with code %1.").arg(exitCode)));
+        ui->cOut->append(QString("<font color=\"orange\">%1</font>").arg(tr("PIF Compiler exited with code %1.").arg(exitCode)));
         abortProcess();
         return;
     }
+    ui->cOut->append(QString("<font color=\"green\">%1</font>").arg(tr("PIF Compiler exited with code %1.").arg(exitCode)));
+    ui->cOut->append("");
     compileObject();
 }
 
 void EditorWindow::compilerError(){
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
-    ui->cOut->append(QString("<font color=\"orange\" font-weight=\"bold\">%1</font>").arg(QString::fromUtf8(compileProcess.readAllStandardError())));
+    ui->cOut->append(QString("<font color=\"orange\">%1</font>").arg(QString::fromUtf8(compileProcess->readAllStandardError())));
 }
 
 void EditorWindow::compilerOutput(){
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
-    ui->cOut->append(QString("<font color=\"black\" font-weight=\"bold\">%1</font>").arg(QString::fromUtf8(compileProcess.readAllStandardOutput())));
+    ui->cOut->append(QString("<font color=\"black\">%1</font>").arg(QString::fromUtf8(compileProcess->readAllStandardOutput())));
 }
 
 void EditorWindow::compilerExited(int exitCode, QProcess::ExitStatus status){
     if (exitCode || status == QProcess::CrashExit){
-        ui->cOut->append(QString("<font color=\"orange\" font-weight=\"bold\">%1</font>").arg(tr("Compiler exited with code %1.").arg(exitCode)));
+        ui->cOut->append(QString("<font color=\"orange\">%1</font>").arg(tr("Compiler exited with code %1.").arg(exitCode)));
         abortProcess();
         return;
     }
+    ui->cOut->append(QString("<font color=\"green\">%1</font>").arg(tr("Compiler exited with code %1.").arg(exitCode)));
+    ui->cOut->append("");
     runProject();
 }
 
 void EditorWindow::executionError(){
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
-    ui->cOut->append(QString("<font color=\"black\" font-weight=\"bold\">%1</font>").arg(QString::fromUtf8(executeProcess.readAllStandardError())));
+    ui->cOut->append(QString("<font color=\"black\">%1</font>").arg(QString::fromUtf8(executeProcess->readAllStandardError())));
 }
 
 void EditorWindow::executionOutput(){
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
-    ui->cOut->append(QString("<font color=\"black\">%1</font>").arg(QString::fromUtf8(buildProcess.readAllStandardOutput())));
+    ui->cOut->append(QString("<font color=\"black\">%1</font>").arg(QString::fromUtf8(executeProcess->readAllStandardOutput())));
 }
 
 void EditorWindow::executionExited(int exitCode, QProcess::ExitStatus){
-    ui->cOut->append(QString("<font color=\"black\" font-weight=\"bold\">%1</font>").arg(tr("\nProcess exited with code %1.").arg(exitCode)));
+    ui->cOut->append("");
+    ui->cOut->append(QString("<font color=\"magenta\">%1</font>").arg(tr("\nProcess exited with code %1.").arg(exitCode)));
+    ui->btAbort->setEnabled(false);
+    ui->btCompileNRun->setEnabled(true);
 }

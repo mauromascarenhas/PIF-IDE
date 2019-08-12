@@ -62,9 +62,9 @@ private:
     QString javacPath;
 
     QFile currentFile;
-    QProcess buildProcess;
-    QProcess compileProcess;
-    QProcess executeProcess;
+    QProcess *buildProcess;
+    QProcess *compileProcess;
+    QProcess *executeProcess;
     QList<QShortcut *> shortCuts;
 
     Highlighter *highlighter;

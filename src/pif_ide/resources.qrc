@@ -13,5 +13,15 @@
         <file>images/about.svg</file>
         <file>images/about_alt.svg</file>
         <file>images/change_exec.svg</file>
+        <file>images/buttons/Close.PNG</file>
+        <file>images/buttons/Details.PNG</file>
+        <file>images/buttons/Down_Arrow.PNG</file>
+        <file>images/buttons/Help.PNG</file>
+        <file>images/buttons/Spin.PNG</file>
+        <file>images/buttons/Up_Arrow.PNG</file>
+        <file>images/scrollbar/slide_down.PNG</file>
+        <file>images/scrollbar/slide_left.PNG</file>
+        <file>images/scrollbar/slide_right.PNG</file>
+        <file>images/scrollbar/slide_up.PNG</file>
     </qresource>
 </RCC>
