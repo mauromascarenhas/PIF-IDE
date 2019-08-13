@@ -11,10 +11,9 @@
 #ifndef NMAINWINDOW_H
 #define NMAINWINDOW_H
 
+#include <QPoint>
 #include <QMainWindow>
 #include <QMouseEvent>
-#include <QPoint>
-#include <QDebug>
 
 #include "titlebar.h"
 
@@ -27,7 +26,7 @@ class NMainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit NMainWindow(QWidget *parent = 0);
+    explicit NMainWindow(QWidget *parent = nullptr);
     ~NMainWindow();
 
     void setCustomWidgets(QWidget *newCentralWidget, QStatusBar *newStatusBar);
@@ -37,6 +36,9 @@ public:
     void setCloseButtonEnabled(bool enable);
     void setMaximizeButtonEnabled(bool enable);
     void setMinimizeButtonEnabled(bool enable);
+
+protected slots:
+    virtual void onCloseRequest();
 
 protected:
     void mousePressEvent(QMouseEvent *event);

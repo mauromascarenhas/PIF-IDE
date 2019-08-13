@@ -29,13 +29,13 @@ TitleBar::~TitleBar()
 void TitleBar::setMainWindow(QWidget *mainWindow){
     this->parent = mainWindow;
 
-    disconnect(ui->btClose, SIGNAL(clicked()), this->parent, SLOT(close()));
+    disconnect(ui->btClose, SIGNAL(clicked()), this, SLOT(onCloseRequest()));
     disconnect(ui->btMinimize, SIGNAL(clicked()), this->parent, SLOT(showMinimized()));
     disconnect(ui->btMaximize, SIGNAL(clicked()), this, SLOT(maximizeParent()));
 
     disconnect(this->parent, SIGNAL(windowTitleChanged(QString)), ui->lblFormTitle, SLOT(setText(QString)));
 
-    connect(ui->btClose, SIGNAL(clicked()), this->parent, SLOT(close()));
+    connect(ui->btClose, SIGNAL(clicked()), this, SLOT(onCloseRequest()));
     connect(ui->btMinimize, SIGNAL(clicked()), this->parent, SLOT(showMinimized()));
     connect(ui->btMaximize, SIGNAL(clicked()), this, SLOT(maximizeParent()));
 
@@ -45,6 +45,10 @@ void TitleBar::setMainWindow(QWidget *mainWindow){
 void TitleBar::maximizeParent(){
     if (parent->isMaximized()) parent->showNormal();
     else parent->showMaximized();
+}
+
+void TitleBar::onCloseRequest(){
+    emit closeRequest();
 }
 
 QWidget* TitleBar::mainWindow(){

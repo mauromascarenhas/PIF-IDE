@@ -1,6 +1,7 @@
 #ifndef SETTINGSWINDOW_H
 #define SETTINGSWINDOW_H
 
+#include <QScreen>
 #include <QSettings>
 #include <QFileDialog>
 #include <QMainWindow>

@@ -36,6 +36,8 @@ NMainWindow::NMainWindow(QWidget *parent) :
     if (this->maximumSize() == this->minimumSize())
         setMaximizeButtonEnabled(false);
 
+    connect(ui->titleBar, SIGNAL(closeRequest()), this, SLOT(onCloseRequest()));
+
     /*
      *  End of non client area implementation
      */
@@ -76,6 +78,10 @@ void NMainWindow::setMaximizeButtonEnabled(bool enable){
 
 void NMainWindow::setMinimizeButtonEnabled(bool enable){
     ui->titleBar->setMinimizeButtonEnabled(enable);
+}
+
+void NMainWindow::onCloseRequest(){
+    this->close();
 }
 
 /*

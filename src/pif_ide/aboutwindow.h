@@ -3,6 +3,7 @@
 
 #include <QDir>
 #include <QUrl>
+#include <QScreen>
 #include <QSettings>
 #include <QMainWindow>
 #include <QMessageBox>

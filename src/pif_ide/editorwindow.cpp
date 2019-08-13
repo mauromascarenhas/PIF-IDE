@@ -11,6 +11,9 @@ EditorWindow::EditorWindow(QWidget *parent) :
     // Otherwise, the window resizing feature will not work
     NMainWindow::setCustomWidgets(ui->centralWidget, ui->statusBar);
 
+    this->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
+                this->size(), QGuiApplication::primaryScreen()->availableGeometry()));
+
     hasChanged = false;
 
     frmAbout = nullptr;
@@ -60,6 +63,25 @@ EditorWindow::~EditorWindow()
     shortCuts.clear();
 
     delete ui;
+}
+
+void EditorWindow::onCloseRequest(){
+    int alt = -1;
+    if (hasChanged && (alt = QMessageBox::question(this, tr("Save current | PIF IDE"),
+                                     tr("The current project has unsaved changes. Would you like to save them"
+                                        " before continuing?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
+                        == QMessageBox::Cancel) return;
+
+    if (alt > 0 && alt == QMessageBox::Yes)
+        while (!saveFile() &&
+                (alt = QMessageBox::question(this, tr("Confirmation | PIF IDE"),
+                                      tr("Seems that you have aborted the operation of saving the current project."
+                                         " Would you like to reconsider and try to save it again?"),
+                                      QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
+                    == QMessageBox::Yes);
+    if (alt == QMessageBox::Cancel) return;
+
+    NMainWindow::onCloseRequest();
 }
 
 void EditorWindow::openAboutForm(){
@@ -150,7 +172,7 @@ void EditorWindow::setupEnvVars(){
             message.setStandardButtons(QMessageBox::Ok);
             message.setCheckBox(cb);
 
-            connect(cb, &QCheckBox::toggled, [this](bool checked){
+            connect(cb, &QCheckBox::toggled, [](bool checked){
                 QSettings settings("Nintersoft", "PIF IDE");
                 settings.beginGroup("warnings");
                 settings.setValue("no_pifc", checked);
@@ -165,7 +187,7 @@ void EditorWindow::setupEnvVars(){
 
     if (settings.childGroups().contains("execution")){
         settings.beginGroup("execution");
-        curExec = (Executor)settings.value("standard exec", Executor::NONE).toInt();
+        curExec = static_cast<Executor>(settings.value("standard exec", Executor::NONE).toInt());
         settings.endGroup();
     }
     else {
@@ -220,7 +242,7 @@ void EditorWindow::sourceChanged(){
 void EditorWindow::openFile(){
     int alt = -1;
     if (hasChanged && (alt = QMessageBox::question(this, tr("Save current | PIF IDE"),
-                                     tr("The current project has unsaved changed. Would you like to save them"
+                                     tr("The current project has unsaved changes. Would you like to save them"
                                         " before continuing?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
                         == QMessageBox::Cancel) return;
 
@@ -326,7 +348,7 @@ bool EditorWindow::saveFile(){
 void EditorWindow::newFile(){
     int alt = -1;
     if (hasChanged && (alt = QMessageBox::question(this, tr("Save current | PIF IDE"),
-                                     tr("The current project has unsaved changed. Would you like to save them"
+                                     tr("The current project has unsaved changes. Would you like to save them"
                                         " before continuing?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
                         == QMessageBox::Cancel) return;
 
@@ -350,7 +372,7 @@ void EditorWindow::newFile(){
 void EditorWindow::compileProject(){
     int alt = -1;
     if (hasChanged && (alt = QMessageBox::question(this, tr("Save current | PIF IDE"),
-                                     tr("The current project has unsaved changed. Would you like to save them"
+                                     tr("The current project has unsaved changes. Would you like to save them"
                                         " before continuing? (if you choose 'no', the project is not going to be built)"),
                                                    QMessageBox::Yes | QMessageBox::No))
                         == QMessageBox::Cancel) return;
@@ -605,12 +627,18 @@ void EditorWindow::abortProcess(){
 
 void EditorWindow::builderError(){
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
-    ui->cOut->append(QString("<font color=\"orange\">%1</font>").arg(QString::fromUtf8(buildProcess->readAllStandardError())));
+    QStringList lines = QString::fromUtf8(buildProcess->readAllStandardError()).split(QRegularExpression("(\\n|\\r\\n)"));
+    if (lines.last().isEmpty() && lines.size()) lines.removeLast();
+    for (const QString &current : lines)
+        ui->cOut->append(QString("<font color=\"orange\">%1</font>").arg(current));
 }
 
 void EditorWindow::builderOutput(){
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
-    ui->cOut->append(QString("<font color=\"black\">%1</font>").arg(QString::fromUtf8(buildProcess->readAllStandardOutput())));
+    QStringList lines = QString::fromUtf8(buildProcess->readAllStandardOutput()).split(QRegularExpression("(\\n|\\r\\n)"));
+    if (lines.last().isEmpty() && lines.size()) lines.removeLast();
+    for (const QString &current : lines)
+        ui->cOut->append(QString("<font color=\"black\">%1</font>").arg(current));
 }
 
 void EditorWindow::builderExited(int exitCode, QProcess::ExitStatus status){
@@ -626,12 +654,18 @@ void EditorWindow::builderExited(int exitCode, QProcess::ExitStatus status){
 
 void EditorWindow::compilerError(){
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
-    ui->cOut->append(QString("<font color=\"orange\">%1</font>").arg(QString::fromUtf8(compileProcess->readAllStandardError())));
+    QStringList lines = QString::fromUtf8(compileProcess->readAllStandardError()).split(QRegularExpression("(\\n|\\r\\n)"));
+    if (lines.last().isEmpty() && lines.size()) lines.removeLast();
+    for (const QString &current : lines)
+        ui->cOut->append(QString("<font color=\"orange\">%1</font>").arg(current));
 }
 
 void EditorWindow::compilerOutput(){
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
-    ui->cOut->append(QString("<font color=\"black\">%1</font>").arg(QString::fromUtf8(compileProcess->readAllStandardOutput())));
+    QStringList lines = QString::fromUtf8(compileProcess->readAllStandardOutput()).split(QRegularExpression("(\\n|\\r\\n)"));
+    if (lines.last().isEmpty() && lines.size()) lines.removeLast();
+    for (const QString &current : lines)
+        ui->cOut->append(QString("<font color=\"black\">%1</font>").arg(current));
 }
 
 void EditorWindow::compilerExited(int exitCode, QProcess::ExitStatus status){
@@ -647,12 +681,18 @@ void EditorWindow::compilerExited(int exitCode, QProcess::ExitStatus status){
 
 void EditorWindow::executionError(){
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
-    ui->cOut->append(QString("<font color=\"black\">%1</font>").arg(QString::fromUtf8(executeProcess->readAllStandardError())));
+    QStringList lines = QString::fromUtf8(executeProcess->readAllStandardError()).split(QRegularExpression("(\\n|\\r\\n)"));
+    if (lines.last().isEmpty() && lines.size()) lines.removeLast();
+    for (const QString &current : lines)
+        ui->cOut->append(QString("<font color=\"orange\">%1</font>").arg(current));
 }
 
 void EditorWindow::executionOutput(){
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
-    ui->cOut->append(QString("<font color=\"black\">%1</font>").arg(QString::fromUtf8(executeProcess->readAllStandardOutput())));
+    QStringList lines = QString::fromUtf8(executeProcess->readAllStandardOutput()).split(QRegularExpression("(\\n|\\r\\n)"));
+    if (lines.last().isEmpty() && lines.size()) lines.removeLast();
+    for (const QString &current : lines)
+        ui->cOut->append(QString("<font color=\"black\">%1</font>").arg(current));
 }
 
 void EditorWindow::executionExited(int exitCode, QProcess::ExitStatus){

@@ -12,6 +12,9 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     NMainWindow::setCustomWidgets(ui->centralWidget, ui->statusBar);
     NMainWindow::setMaximizeButtonEnabled(false);
 
+    this->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
+                this->size(), QGuiApplication::primaryScreen()->availableGeometry()));
+
     connect(ui->btSave, SIGNAL(clicked(bool)), this, SLOT(saveSettings()));
     connect(ui->btCancel, SIGNAL(clicked(bool)), this, SLOT(close()));
     connect(ui->btReset, SIGNAL(clicked(bool)), this, SLOT(resetSettings()));

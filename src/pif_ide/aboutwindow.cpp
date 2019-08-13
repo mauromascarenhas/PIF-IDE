@@ -12,6 +12,9 @@ AboutWindow::AboutWindow(QWidget *parent) :
     NMainWindow::setCustomWidgets(ui->centralWidget, ui->statusBar);
     NMainWindow::setMaximizeButtonEnabled(false);
 
+    this->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
+                this->size(), QGuiApplication::primaryScreen()->availableGeometry()));
+
     loadCompilerData();
 
     connect(ui->btOHelp, SIGNAL(clicked(bool)), this, SLOT(openOnlineHelp()));

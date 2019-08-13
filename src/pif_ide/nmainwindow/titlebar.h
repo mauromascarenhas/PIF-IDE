@@ -49,6 +49,10 @@ protected:
 
 protected slots:
     void maximizeParent();
+    void onCloseRequest();
+
+signals:
+    void closeRequest();
 };
 
 #endif // TITLEBAR_H

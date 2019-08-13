@@ -4,6 +4,7 @@
 #include <QDir>
 #include <QList>
 #include <QFile>
+#include <QScreen>
 #include <QProcess>
 #include <QShortcut>
 #include <QFileInfo>
@@ -37,7 +38,6 @@ public:
 private:
     Ui::EditorWindow *ui;
 
-private:
     enum Executor{
         NONE,
         C,
@@ -71,6 +71,9 @@ private:
 
     AboutWindow *frmAbout;
     SettingsWindow *frmSettings;
+
+protected slots:
+    void onCloseRequest();
 
 private slots:
     void openAboutForm();
