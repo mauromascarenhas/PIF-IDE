@@ -18,6 +18,7 @@
 #include <QKeySequence>
 #include <QStandardPaths>
 
+#include "pifeditor.h"
 #include "nmainwindow.h"
 #include "aboutwindow.h"
 #include "settingswindow.h"

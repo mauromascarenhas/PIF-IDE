@@ -59,6 +59,8 @@ EditorWindow::~EditorWindow()
 
     delete highlighter;
 
+    if (currentFile.isOpen()) currentFile.close();
+
     for (QShortcut *shortcut : shortCuts) delete shortcut;
     shortCuts.clear();
 
@@ -256,7 +258,7 @@ void EditorWindow::openFile(){
 
     if (currentFile.isOpen()) currentFile.close();
 
-    QFileDialog openDialog(this, tr("Open PIF file - PIF IDE"), QDir::homePath(), tr("PIF source file (%1)").arg("*.pifc"));
+    QFileDialog openDialog(nullptr, tr("Open PIF file - PIF IDE"), QDir::homePath(), tr("PIF source file (%1)").arg("*.pifc"));
     openDialog.setFileMode(QFileDialog::ExistingFile);
     openDialog.setAcceptMode(QFileDialog::AcceptOpen);
     openDialog.setDefaultSuffix(".pifc");
@@ -311,7 +313,7 @@ bool EditorWindow::saveFile(){
         }
     }
 
-    QFileDialog saveDialog(this, tr("Save PIF file - PIF IDE"), QDir::homePath(), tr("PIF source file (%1)").arg("*.pifc"));
+    QFileDialog saveDialog(nullptr, tr("Save PIF file - PIF IDE"), QDir::homePath(), tr("PIF source file (%1)").arg("*.pifc"));
     saveDialog.setAcceptMode(QFileDialog::AcceptSave);
     saveDialog.setDefaultSuffix(".pifc");
     if (saveDialog.exec()){
@@ -628,7 +630,7 @@ void EditorWindow::abortProcess(){
 void EditorWindow::builderError(){
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
     QStringList lines = QString::fromUtf8(buildProcess->readAllStandardError()).split(QRegularExpression("(\\n|\\r\\n)"));
-    if (lines.last().isEmpty() && lines.size()) lines.removeLast();
+    if (lines.size() > 1 && lines.last().isEmpty()) lines.removeLast();
     for (const QString &current : lines)
         ui->cOut->append(QString("<font color=\"orange\">%1</font>").arg(current));
 }
@@ -636,7 +638,7 @@ void EditorWindow::builderError(){
 void EditorWindow::builderOutput(){
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
     QStringList lines = QString::fromUtf8(buildProcess->readAllStandardOutput()).split(QRegularExpression("(\\n|\\r\\n)"));
-    if (lines.last().isEmpty() && lines.size()) lines.removeLast();
+    if (lines.size() > 1 && lines.last().isEmpty()) lines.removeLast();
     for (const QString &current : lines)
         ui->cOut->append(QString("<font color=\"black\">%1</font>").arg(current));
 }
@@ -655,7 +657,7 @@ void EditorWindow::builderExited(int exitCode, QProcess::ExitStatus status){
 void EditorWindow::compilerError(){
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
     QStringList lines = QString::fromUtf8(compileProcess->readAllStandardError()).split(QRegularExpression("(\\n|\\r\\n)"));
-    if (lines.last().isEmpty() && lines.size()) lines.removeLast();
+    if (lines.size() > 1 && lines.last().isEmpty()) lines.removeLast();
     for (const QString &current : lines)
         ui->cOut->append(QString("<font color=\"orange\">%1</font>").arg(current));
 }
@@ -663,7 +665,7 @@ void EditorWindow::compilerError(){
 void EditorWindow::compilerOutput(){
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
     QStringList lines = QString::fromUtf8(compileProcess->readAllStandardOutput()).split(QRegularExpression("(\\n|\\r\\n)"));
-    if (lines.last().isEmpty() && lines.size()) lines.removeLast();
+    if (lines.size() > 1 && lines.last().isEmpty()) lines.removeLast();
     for (const QString &current : lines)
         ui->cOut->append(QString("<font color=\"black\">%1</font>").arg(current));
 }
@@ -682,7 +684,7 @@ void EditorWindow::compilerExited(int exitCode, QProcess::ExitStatus status){
 void EditorWindow::executionError(){
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
     QStringList lines = QString::fromUtf8(executeProcess->readAllStandardError()).split(QRegularExpression("(\\n|\\r\\n)"));
-    if (lines.last().isEmpty() && lines.size()) lines.removeLast();
+    if (lines.size() > 1 && lines.last().isEmpty()) lines.removeLast();
     for (const QString &current : lines)
         ui->cOut->append(QString("<font color=\"orange\">%1</font>").arg(current));
 }
@@ -690,7 +692,7 @@ void EditorWindow::executionError(){
 void EditorWindow::executionOutput(){
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
     QStringList lines = QString::fromUtf8(executeProcess->readAllStandardOutput()).split(QRegularExpression("(\\n|\\r\\n)"));
-    if (lines.last().isEmpty() && lines.size()) lines.removeLast();
+    if (lines.size() > 1 && lines.last().isEmpty()) lines.removeLast();
     for (const QString &current : lines)
         ui->cOut->append(QString("<font color=\"black\">%1</font>").arg(current));
 }

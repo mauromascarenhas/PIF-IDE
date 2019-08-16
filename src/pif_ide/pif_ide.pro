@@ -24,7 +24,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 CONFIG += c++11
 
-INCLUDEPATH += ./nmainwindow
+INCLUDEPATH += ./nmainwindow \
+    ./pifeditor
 
 SOURCES += \
         aboutwindow.cpp \
@@ -33,6 +34,7 @@ SOURCES += \
         nmainwindow/titlebar.cpp \
         nmainwindow/nmainwindow.cpp \
         editorwindow.cpp \
+        pifeditor/pifeditor.cpp \
         settingswindow.cpp
 
 HEADERS += \
@@ -41,6 +43,7 @@ HEADERS += \
         nmainwindow/titlebar.h \
         nmainwindow/nmainwindow.h \
         editorwindow.h \
+        pifeditor/pifeditor.h \
         settingswindow.h
 
 FORMS += \

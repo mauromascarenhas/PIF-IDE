@@ -574,7 +574,7 @@ QTextEdit {
      <number>9</number>
     </property>
     <item row="1" column="0">
-     <widget class="QTextEdit" name="sourceEditor">
+     <widget class="PIFEditor" name="sourceEditor">
       <property name="font">
        <font>
         <family>Segoe UI</family>
@@ -828,6 +828,13 @@ QTextEdit {
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>PIFEditor</class>
+   <extends>QTextEdit</extends>
+   <header>pifeditor/pifeditor.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>sourceEditor</tabstop>
   <tabstop>btOpenFile</tabstop>
