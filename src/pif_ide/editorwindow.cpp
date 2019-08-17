@@ -69,14 +69,14 @@ EditorWindow::~EditorWindow()
 
 void EditorWindow::onCloseRequest(){
     int alt = -1;
-    if (hasChanged && (alt = QMessageBox::question(this, tr("Save current | PIF IDE"),
+    if (hasChanged && (alt = QMessageBox::question(nullptr, tr("Save current | PIF IDE"),
                                      tr("The current project has unsaved changes. Would you like to save them"
                                         " before continuing?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
                         == QMessageBox::Cancel) return;
 
     if (alt > 0 && alt == QMessageBox::Yes)
         while (!saveFile() &&
-                (alt = QMessageBox::question(this, tr("Confirmation | PIF IDE"),
+                (alt = QMessageBox::question(nullptr, tr("Confirmation | PIF IDE"),
                                       tr("Seems that you have aborted the operation of saving the current project."
                                          " Would you like to reconsider and try to save it again?"),
                                       QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
@@ -243,14 +243,14 @@ void EditorWindow::sourceChanged(){
 
 void EditorWindow::openFile(){
     int alt = -1;
-    if (hasChanged && (alt = QMessageBox::question(this, tr("Save current | PIF IDE"),
+    if (hasChanged && (alt = QMessageBox::question(nullptr, tr("Save current | PIF IDE"),
                                      tr("The current project has unsaved changes. Would you like to save them"
                                         " before continuing?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
                         == QMessageBox::Cancel) return;
 
     if (alt > 0 && alt == QMessageBox::Yes)
         while (!saveFile() &&
-                QMessageBox::question(this, tr("Confirmation | PIF IDE"),
+                QMessageBox::question(nullptr, tr("Confirmation | PIF IDE"),
                                       tr("Seems that you have aborted the operation of saving the current project."
                                          " Would you like to reconsider and try to save it again?"),
                                       QMessageBox::Yes, QMessageBox::No)
@@ -265,7 +265,7 @@ void EditorWindow::openFile(){
     if (openDialog.exec()){
         currentFile.setFileName(openDialog.selectedFiles()[0]);
         if (!currentFile.open(QIODevice::ReadWrite | QIODevice::Text)){
-            QMessageBox::critical(this, tr("Error | PIF IDE"),
+            QMessageBox::critical(nullptr, tr("Error | PIF IDE"),
                                   tr("It was not possible to open the specified file. Please, make sure the file %1 "
                                      "exists and is readable/writeable.").arg(currentFile.fileName()),
                                   QMessageBox::Ok, QMessageBox::NoButton);
@@ -293,7 +293,7 @@ bool EditorWindow::saveFile(){
             currentFile.close();
 
             while (!currentFile.open(QIODevice::ReadWrite | QIODevice::Text) &&
-                QMessageBox::warning(this, tr("Warning | PIF IDE"),
+                QMessageBox::warning(nullptr, tr("Warning | PIF IDE"),
                                      tr("It was not possible to stablish a file lock (open with read/write permissions)."
                                         " This may cause your current project to be overwritten by other programs."
                                         " Would you like us to try again?"), QMessageBox::Yes, QMessageBox::No)
@@ -305,7 +305,7 @@ bool EditorWindow::saveFile(){
             return true;
         }
         else {
-            QMessageBox::critical(this, tr("Error | PIF IDE"),
+            QMessageBox::critical(nullptr, tr("Error | PIF IDE"),
                                   tr("It was not possible to truncate the specified filename so as to save the"
                                      " current state of the project (It was not possible to stablish the file"
                                      " lock as well). Please, try again later."), QMessageBox::Ok);
@@ -319,7 +319,7 @@ bool EditorWindow::saveFile(){
     if (saveDialog.exec()){
         currentFile.setFileName(saveDialog.selectedFiles()[0]);
         if (!currentFile.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)){
-            QMessageBox::critical(this, tr("Error | PIF IDE"),
+            QMessageBox::critical(nullptr, tr("Error | PIF IDE"),
                                   tr("It was not possible to create the specified file. Please, make sure the file %1 "
                                      "is readable/writeable.").arg(currentFile.fileName()),
                                   QMessageBox::Ok, QMessageBox::NoButton);
@@ -333,7 +333,7 @@ bool EditorWindow::saveFile(){
         currentFile.close();
 
         while (!currentFile.open(QIODevice::ReadWrite | QIODevice::Text) &&
-            QMessageBox::warning(this, tr("Warning | PIF IDE"),
+            QMessageBox::warning(nullptr, tr("Warning | PIF IDE"),
                                  tr("It was not possible to stablish a file lock (open with read/write permissions)."
                                     " This may cause your current project to be overwritten by other programs."
                                     " Would you like us to try again?"), QMessageBox::Yes, QMessageBox::No)
@@ -349,14 +349,14 @@ bool EditorWindow::saveFile(){
 
 void EditorWindow::newFile(){
     int alt = -1;
-    if (hasChanged && (alt = QMessageBox::question(this, tr("Save current | PIF IDE"),
+    if (hasChanged && (alt = QMessageBox::question(nullptr, tr("Save current | PIF IDE"),
                                      tr("The current project has unsaved changes. Would you like to save them"
                                         " before continuing?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
                         == QMessageBox::Cancel) return;
 
     if (alt > 0 && alt == QMessageBox::Yes)
         while (!saveFile() &&
-                QMessageBox::question(this, tr("Confirmation | PIF IDE"),
+                QMessageBox::question(nullptr, tr("Confirmation | PIF IDE"),
                                       tr("Seems that you have aborted the operation of saving the current project."
                                          " Would you like to reconsider and try to save it again?"),
                                       QMessageBox::Yes, QMessageBox::No)
@@ -373,14 +373,14 @@ void EditorWindow::newFile(){
 
 void EditorWindow::compileProject(){
     int alt = -1;
-    if (hasChanged && (alt = QMessageBox::question(this, tr("Save current | PIF IDE"),
+    if (hasChanged && (alt = QMessageBox::question(nullptr, tr("Save current | PIF IDE"),
                                      tr("The current project has unsaved changes. Would you like to save them"
                                         " before continuing? (if you choose 'no', the project is not going to be built)"),
                                                    QMessageBox::Yes | QMessageBox::No))
                         == QMessageBox::Cancel) return;
     if (alt > 0 && alt == QMessageBox::Yes)
         while (!saveFile() &&
-                (alt = QMessageBox::question(this, tr("Confirmation | PIF IDE"),
+                (alt = QMessageBox::question(nullptr, tr("Confirmation | PIF IDE"),
                                       tr("Seems that you have aborted the operation of saving the current project."
                                          " Would you like to reconsider and try to save it again?"),
                                       QMessageBox::Yes, QMessageBox::No))
