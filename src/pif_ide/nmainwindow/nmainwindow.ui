@@ -88,7 +88,7 @@ QStatusBar{
     <set>QDockWidget::NoDockWidgetFeatures</set>
    </property>
    <property name="allowedAreas">
-    <set>Qt::NoDockWidgetArea</set>
+    <set>Qt::TopDockWidgetArea</set>
    </property>
    <attribute name="dockWidgetArea">
     <number>4</number>

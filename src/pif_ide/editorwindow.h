@@ -73,8 +73,8 @@ private:
     AboutWindow *frmAbout;
     SettingsWindow *frmSettings;
 
-protected slots:
-    void onCloseRequest();
+protected:
+    void closeEvent(QCloseEvent *event);
 
 private slots:
     void openAboutForm();

@@ -12,6 +12,7 @@
 #define NMAINWINDOW_H
 
 #include <QPoint>
+#include <QCloseEvent>
 #include <QMainWindow>
 #include <QMouseEvent>
 
@@ -37,10 +38,9 @@ public:
     void setMaximizeButtonEnabled(bool enable);
     void setMinimizeButtonEnabled(bool enable);
 
-protected slots:
-    virtual void onCloseRequest();
-
 protected:
+    void closeEvent(QCloseEvent *event);
+
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
     void undefMouseMoveEvent(QObject *object, QMouseEvent* event);

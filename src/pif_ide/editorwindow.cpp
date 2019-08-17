@@ -67,12 +67,11 @@ EditorWindow::~EditorWindow()
     delete ui;
 }
 
-void EditorWindow::onCloseRequest(){
+void EditorWindow::closeEvent(QCloseEvent *event){
     int alt = -1;
-    if (hasChanged && (alt = QMessageBox::question(nullptr, tr("Save current | PIF IDE"),
-                                     tr("The current project has unsaved changes. Would you like to save them"
-                                        " before continuing?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
-                        == QMessageBox::Cancel) return;
+    if (hasChanged) alt = QMessageBox::question(nullptr, tr("Save current | PIF IDE"),
+                                                tr("The current project has unsaved changes. Would you like to save them"
+                                                   " before continuing?"), QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
 
     if (alt > 0 && alt == QMessageBox::Yes)
         while (!saveFile() &&
@@ -81,9 +80,9 @@ void EditorWindow::onCloseRequest(){
                                          " Would you like to reconsider and try to save it again?"),
                                       QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel))
                     == QMessageBox::Yes);
-    if (alt == QMessageBox::Cancel) return;
+    if (alt == QMessageBox::Cancel) event->ignore();
 
-    NMainWindow::onCloseRequest();
+    NMainWindow::closeEvent(event);
 }
 
 void EditorWindow::openAboutForm(){
