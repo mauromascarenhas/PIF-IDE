@@ -51,6 +51,14 @@ EditorWindow::EditorWindow(QWidget *parent) :
 
     // Sets focus on sourceEditor
     ui->sourceEditor->setFocus();
+
+    // Enables text completion
+    QStringList words = QStringList() << "enquanto" << "faça" << "senão"
+                                      << "literal" << "numérico" << "booleano"
+                                      << "fim-se" << "fim-enquanto" << "leia"
+                                      << "escreva" << "programa" << "falso"
+                                      << "verdadeiro";
+    ui->sourceEditor->setCompleter(new QCompleter(words, this));
 }
 
 EditorWindow::~EditorWindow()
