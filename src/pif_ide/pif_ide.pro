@@ -53,6 +53,8 @@ FORMS += \
         editorwindow.ui \
         settingswindow.ui
 
+TRANSLATIONS += lang/pif_ide_pt.ts
+
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin

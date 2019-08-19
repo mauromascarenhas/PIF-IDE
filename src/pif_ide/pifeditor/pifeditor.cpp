@@ -58,7 +58,7 @@ void PIFEditor::keyPressEvent(QKeyEvent *event){
         }
     }
 
-    bool isShortcut = ((event->modifiers() & Qt::ControlModifier) && event->key() == Qt::Key_E);
+    bool isShortcut = ((event->modifiers() & Qt::ControlModifier) && event->key() == Qt::Key_Space);
     if (!cplt || !isShortcut){
         QTextEdit::keyPressEvent(event);
 

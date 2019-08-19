@@ -4,13 +4,16 @@
 #include <QDir>
 #include <QList>
 #include <QFile>
+#include <QEvent>
 #include <QScreen>
+#include <QLocale>
 #include <QProcess>
 #include <QShortcut>
 #include <QFileInfo>
 #include <QSettings>
 #include <QCheckBox>
 #include <QCompleter>
+#include <QTranslator>
 #include <QTextStream>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -47,14 +50,6 @@ private:
         JAVA
     } curExec;
 
-    void compileProject();
-    void compileObject();
-    void runProject();
-
-    void setupEditor();
-    void setupEnvVars();
-    void createShortcuts();
-
     bool hasChanged;
 
     QString pifcPath;
@@ -74,7 +69,22 @@ private:
     AboutWindow *frmAbout;
     SettingsWindow *frmSettings;
 
+    QTranslator translator;
+    QTranslator qtTranslator;
+
+    void compileProject();
+    void compileObject();
+    void runProject();
+
+    void setupEditor();
+    void setupEnvVars();
+    void createShortcuts();
+
+    void changeLanguage(const QString &slug);
+    void changeTranslator(QTranslator &translator, const QString &filePath);
+
 protected:
+    void changeEvent(QEvent *event);
     void closeEvent(QCloseEvent *event);
 
 private slots:
@@ -85,6 +95,7 @@ private slots:
 
     void openFile();
     bool saveFile();
+    bool saveFileAs();
     void newFile();
 
     void increaseFontSize();

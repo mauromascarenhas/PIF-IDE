@@ -27,10 +27,17 @@ EditorWindow::EditorWindow(QWidget *parent) :
     setupEnvVars();
     createShortcuts();
 
+    // Detects system language
+    QString locale = QLocale::system().name();
+    locale.truncate(locale.indexOf("_"));
+
+    if (locale == "pt") changeLanguage("pt");
+
     // Connects signals and slots
     connect(ui->btNewFile, SIGNAL(clicked()), this, SLOT(newFile()));
     connect(ui->btOpenFile, SIGNAL(clicked()), this, SLOT(openFile()));
     connect(ui->btSaveFile, SIGNAL(clicked()), this, SLOT(saveFile()));
+    connect(ui->btSaveFileAs, SIGNAL(clicked()), this, SLOT(saveFileAs()));
 
     connect(ui->btConsoleView, SIGNAL(toggled(bool)), ui->consoleWidget, SLOT(setVisible(bool)));
 
@@ -73,6 +80,11 @@ EditorWindow::~EditorWindow()
     shortCuts.clear();
 
     delete ui;
+}
+
+void EditorWindow::changeEvent(QEvent *event){
+    if (event && event->type() == QEvent::LanguageChange) ui->retranslateUi(this);
+    NMainWindow::changeEvent(event);
 }
 
 void EditorWindow::closeEvent(QCloseEvent *event){
@@ -217,6 +229,8 @@ void EditorWindow::setupEnvVars(){
 void EditorWindow::createShortcuts(){
     shortCuts.append(new QShortcut(QKeySequence(tr("Ctrl+O", "File|Open")), this));
     shortCuts.append(new QShortcut(QKeySequence(tr("Ctrl+S", "File|Save")), this));
+    shortCuts.append(new QShortcut(QKeySequence(tr("F12", "File|Save As")), this));
+    shortCuts.append(new QShortcut(QKeySequence(tr("Ctrl+Shift+S", "File|Save As")), this));
     shortCuts.append(new QShortcut(QKeySequence(tr("Ctrl+N", "File|New")), this));
     shortCuts.append(new QShortcut(QKeySequence(tr("Ctrl++", "Zoom|In")), this));
     shortCuts.append(new QShortcut(QKeySequence(tr("Ctrl+-", "Zoom|Out")), this));
@@ -226,17 +240,29 @@ void EditorWindow::createShortcuts(){
 
     connect(shortCuts[0], SIGNAL(activated()), this, SLOT(openFile()));
     connect(shortCuts[1], SIGNAL(activated()), this, SLOT(saveFile()));
-    connect(shortCuts[2], SIGNAL(activated()), this, SLOT(newFile()));
+    connect(shortCuts[2], SIGNAL(activated()), this, SLOT(saveFileAs()));
+    connect(shortCuts[3], SIGNAL(activated()), this, SLOT(saveFileAs()));
+    connect(shortCuts[4], SIGNAL(activated()), this, SLOT(newFile()));
 
-    connect(shortCuts[3], SIGNAL(activated()), this, SLOT(increaseFontSize()));
-    connect(shortCuts[4], SIGNAL(activated()), this, SLOT(reduceFontSize()));
+    connect(shortCuts[5], SIGNAL(activated()), this, SLOT(increaseFontSize()));
+    connect(shortCuts[6], SIGNAL(activated()), this, SLOT(reduceFontSize()));
 
-    connect(shortCuts[5], SIGNAL(activated()), ui->btConsoleView, SLOT(toggle()));
+    connect(shortCuts[7], SIGNAL(activated()), ui->btConsoleView, SLOT(toggle()));
 
     if (!pifcPath.isEmpty()){
-        connect(shortCuts[6], SIGNAL(activated()), this, SLOT(buildNRun()));
-        connect(shortCuts[7], SIGNAL(activated()), this, SLOT(abortProcess()));
+        connect(shortCuts[8], SIGNAL(activated()), this, SLOT(buildNRun()));
+        connect(shortCuts[9], SIGNAL(activated()), this, SLOT(abortProcess()));
     }
+}
+
+void EditorWindow::changeLanguage(const QString &slug){
+    changeTranslator(translator, QApplication::applicationDirPath().append("/lang/pif_ide_%1.qm").arg(slug));
+    changeTranslator(qtTranslator, QApplication::applicationDirPath().append("/translations/qt_%1.qm").arg(slug));
+}
+
+void EditorWindow::changeTranslator(QTranslator &translator, const QString &filePath){
+    QApplication::removeTranslator(&translator);
+    if (translator.load(filePath)) QApplication::installTranslator(&translator);
 }
 
 void EditorWindow::sourceChanged(){
@@ -265,7 +291,7 @@ void EditorWindow::openFile(){
 
     if (currentFile.isOpen()) currentFile.close();
 
-    QFileDialog openDialog(nullptr, tr("Open PIF file - PIF IDE"), QDir::homePath(), tr("PIF source file (%1)").arg("*.pifc"));
+    QFileDialog openDialog(nullptr, tr("Open PIF file | PIF IDE"), QDir::homePath(), tr("PIF source file (%1)").arg("*.pifc"));
     openDialog.setFileMode(QFileDialog::ExistingFile);
     openDialog.setAcceptMode(QFileDialog::AcceptOpen);
     openDialog.setDefaultSuffix(".pifc");
@@ -320,10 +346,47 @@ bool EditorWindow::saveFile(){
         }
     }
 
-    QFileDialog saveDialog(nullptr, tr("Save PIF file - PIF IDE"), QDir::homePath(), tr("PIF source file (%1)").arg("*.pifc"));
+    QFileDialog saveDialog(nullptr, tr("Save PIF file | PIF IDE"), QDir::homePath(), tr("PIF source file (%1)").arg("*.pifc"));
     saveDialog.setAcceptMode(QFileDialog::AcceptSave);
     saveDialog.setDefaultSuffix(".pifc");
     if (saveDialog.exec()){
+        currentFile.setFileName(saveDialog.selectedFiles()[0]);
+        if (!currentFile.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)){
+            QMessageBox::critical(nullptr, tr("Error | PIF IDE"),
+                                  tr("It was not possible to create the specified file. Please, make sure the file %1 "
+                                     "is readable/writeable.").arg(currentFile.fileName()),
+                                  QMessageBox::Ok, QMessageBox::NoButton);
+            return false;
+        }
+
+        QTextStream stream(&currentFile);
+        stream.setCodec("UTF-8");
+        stream.setGenerateByteOrderMark(true);
+        stream << ui->sourceEditor->toPlainText().toUtf8();
+        currentFile.close();
+
+        while (!currentFile.open(QIODevice::ReadWrite | QIODevice::Text) &&
+            QMessageBox::warning(nullptr, tr("Warning | PIF IDE"),
+                                 tr("It was not possible to stablish a file lock (open with read/write permissions)."
+                                    " This may cause your current project to be overwritten by other programs."
+                                    " Would you like us to try again?"), QMessageBox::Yes, QMessageBox::No)
+               == QMessageBox::Yes);
+
+        hasChanged = false;
+        this->setWindowTitle(tr("%1.pifc | PIF IDE").arg(QFileInfo(currentFile).baseName()));
+        connect(ui->sourceEditor, SIGNAL(textChanged()), this, SLOT(sourceChanged()));
+        return true;
+    }
+    else return false;
+}
+
+bool EditorWindow::saveFileAs(){
+    QFileDialog saveDialog(nullptr, tr("Save PIF file as... | PIF IDE"), QDir::homePath(), tr("PIF source file (%1)").arg("*.pifc"));
+    saveDialog.setAcceptMode(QFileDialog::AcceptSave);
+    saveDialog.setDefaultSuffix(".pifc");
+    if (saveDialog.exec()){
+        if (currentFile.isOpen()) currentFile.close();
+
         currentFile.setFileName(saveDialog.selectedFiles()[0]);
         if (!currentFile.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)){
             QMessageBox::critical(nullptr, tr("Error | PIF IDE"),

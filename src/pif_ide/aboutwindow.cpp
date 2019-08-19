@@ -51,7 +51,7 @@ void AboutWindow::loadCompilerData(){
         ui->lblInfoJava->setText(tr("Java compiler located at \"%1\"\n"
                                     "JVM located at \"%2\"").arg(javacPath, javaPath));
     else if (!javaPath.isEmpty())
-        ui->lblInfoJava->setText(tr("JVM located at \"%2\"").arg(javaPath));
+        ui->lblInfoJava->setText(tr("JVM located at \"%1\"").arg(javaPath));
     else if (!javacPath.isEmpty())
         ui->lblInfoJava->setText(tr("Java compiler located at \"%1\"").arg(javacPath));
 }
