@@ -1,6 +1,7 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2019-07-31T22:24:35
+# PIF IDE by PIF Project
+# Licence: Nintersoft Open Source Licence
 #
 #-------------------------------------------------
 
@@ -10,6 +11,21 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = pif_ide
 TEMPLATE = app
+
+win32 {
+    VERSION = 0.8.02
+
+    QMAKE_TARGET_COMPANY = PIF Project
+    QMAKE_TARGET_PRODUCT = PIF IDE
+    QMAKE_TARGET_DESCRIPTION = PIF IDE
+    QMAKE_TARGET_COPYRIGHT = Copyright (c) 2019 - PIF Project
+
+    #RC_ICONS = images\logos\Logo.ico
+    RC_LANG = 0x0800
+}
+else {
+    VERSION = 0.8.02
+}
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
