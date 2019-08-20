@@ -8,9 +8,9 @@ AppPublisherURL=https://github.com/mauromascarenhas/PIF-IDE/
 AppSupportURL=https://github.com/mauromascarenhas/PIF-IDE/issues
 AppUpdatesURL=https://github.com/mauromascarenhas/PIF-IDE/
 AppCopyright=Copyright (C) 2019 PIF Project.
-DefaultDirName={pf}\PIF Project\PIF IDE
+DefaultDirName={pf}\Projeto PIF\PIF IDE\
 DisableDirPage=yes
-DefaultGroupName=PIF
+DefaultGroupName=PIF IDE
 AllowNoIcons=yes
 OutputDir=C:\Users\Mauro\Desktop\PIF_IDE
 OutputBaseFilename=pif_ide-0.8.02_x64
@@ -73,7 +73,9 @@ end;
 
 [Icons]
 Name: "{group}\PIF IDE"; Filename: "{app}\pif_ide.exe"
-Name: "{group}\Licença de código aberto"; Filename: "{app}\Licença de Código Aberto Nintersoft rev1.pdf"
+Name: "{group}\{cm:IDEProgramSources}"; Filename: "{app}\sources"
+Name: "{group}\{cm:Licence}"; Filename: "{app}\licence\LGPL_V3.txt"
+Name: "{group}\{cm:NSLicence}"; Filename: "{app}\licence\Licença de Código Aberto Nintersoft rev1.pdf"
 Name: "{group}\{cm:ProgramOnTheWeb,PIF IDE}"; Filename: "https://github.com/mauromascarenhas/PIF-IDE/"
 Name: "{group}\{cm:UninstallProgram,PIF IDE}"; Filename: "{uninstallexe}"
 Name: "{commondesktop}\PIF IDE"; Filename: "{app}\pif_ide.exe"; Tasks: desktopicon
@@ -85,10 +87,16 @@ Filename: "{app}\pif_ide.exe"; Description: "{cm:LaunchProgram,PIF IDE}"; Flags:
 [CustomMessages]
 CustomInstall=Custom installation
 FullInstall=Full installation
+Licence=LGPL_v3 Licence
+NSLicence=Nintersoft Open Source Code Licence
 ProgramFiles=Program Files
+IDEProgramSources=PIF IDE Sources
 SourceFiles=Source Files
 
 brazilianportuguese.CustomInstall=Instalação personalizada
 brazilianportuguese.FullInstall=Instalação completa
+brazilianportuguese.Licence=Licença LGPL_v3
+brazilianportuguese.NSLicence=Licença de Código aberto Nintersoft
 brazilianportuguese.ProgramFiles=Arquivos de programa
+brazilianportuguese.IDEProgramSources=Código fonte PIF IDE
 brazilianportuguese.SourceFiles=Código fonte

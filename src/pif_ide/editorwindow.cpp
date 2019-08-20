@@ -148,6 +148,22 @@ void EditorWindow::setupEnvVars(){
         javaPath = settings.value("java_path", "").toString();
         pifcPath = settings.value("pifc_path", "").toString();
         javacPath = settings.value("javac_path", "").toString();
+
+#ifdef Q_OS_WINDOWS
+        if (!(pifcPath = QStandardPaths::findExecutable("pifc")).isEmpty())
+            settings.setValue("pifc_path", pifcPath);
+
+        if (pifcPath.isEmpty()){
+            QDir appDir(QApplication::applicationDirPath());
+            if (appDir.cdUp() && appDir.cdUp()){
+                QString aPath = appDir.absolutePath() + QDir::separator();
+                pifcPath = QStandardPaths::findExecutable("pifc", QStringList() << aPath + "Nintersoft" + QDir::separator() + "PIF" + QDir::separator()
+                                                                                << aPath + QDir::separator() + "Projeto PIF" + QDir::separator() + "PIF" + QDir::separator()
+                                                                                << aPath + QDir::separator() + "PIF" + QDir::separator());
+                if (!pifcPath.isEmpty()) settings.setValue("pifc_path", pifcPath);
+            }
+        }
+#endif
     }
     else {
         settings.beginGroup("environment variables");
@@ -158,12 +174,17 @@ void EditorWindow::setupEnvVars(){
         pifcPath = QStandardPaths::findExecutable("pifc");
         javacPath = QStandardPaths::findExecutable("javac");
 
-        QStringList aPaths;
-        if (pifcPath.isEmpty() &&
-                !(aPaths = QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation)).isEmpty())
-            pifcPath = QStandardPaths::findExecutable("pifc", QStringList() << aPaths[0] + QDir::separator() + "Nintersoft" + QDir::separator() + "PIF" + QDir::separator()
-                                                                            << aPaths[0] + QDir::separator() + "Projeto PIF" + QDir::separator() + "PIF" + QDir::separator()
-                                                                            << aPaths[0] + QDir::separator() + "PIF" + QDir::separator());
+#ifdef Q_OS_WINDOWS
+        if (pifcPath.isEmpty()){
+            QDir appDir(QApplication::applicationDirPath());
+            if (appDir.cdUp() && appDir.cdUp()){
+                QString aPath = appDir.absolutePath() + QDir::separator();
+                pifcPath = QStandardPaths::findExecutable("pifc", QStringList() << aPath + "Nintersoft" + QDir::separator() + "PIF" + QDir::separator()
+                                                                                << aPath + QDir::separator() + "Projeto PIF" + QDir::separator() + "PIF" + QDir::separator()
+                                                                                << aPath + QDir::separator() + "PIF" + QDir::separator());
+            }
+        }
+#endif
 
         settings.setValue("c_path", cPath);
         settings.setValue("cpp_path", cppPath);

@@ -69,5 +69,5 @@ void AboutWindow::openSourceSamples(){
 }
 
 void AboutWindow::openNSOSL(){
-    QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/Licença de Código Aberto Nintersoft rev1.pdf"));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/licence/Licença de Código Aberto Nintersoft rev1.pdf"));
 }
