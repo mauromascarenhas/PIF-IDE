@@ -2,6 +2,9 @@
 <ui version="4.0">
  <class>SettingsWindow</class>
  <widget class="QMainWindow" name="SettingsWindow">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -24,6 +27,10 @@
   </property>
   <property name="windowTitle">
    <string>Settings  | PIF IDE</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/images/logo/pif_logo.svg</normaloff>:/images/logo/pif_logo.svg</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget#titleBar{
@@ -810,6 +817,8 @@ QListWidget {
   <tabstop>btCancel</tabstop>
   <tabstop>btReset</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

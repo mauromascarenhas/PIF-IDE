@@ -24,5 +24,8 @@
         <file>images/scrollbar/slide_right.PNG</file>
         <file>images/scrollbar/slide_up.PNG</file>
         <file>images/save_as.svg</file>
+        <file>images/logo/pif_logo.png</file>
+        <file>images/logo/pif_logo.svg</file>
+        <file>images/logo/pif_logo_x64.ico</file>
     </qresource>
 </RCC>

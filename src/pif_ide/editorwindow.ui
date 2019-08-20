@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>PIF IDE</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="resources.qrc">
+    <normaloff>:/images/logo/pif_logo.svg</normaloff>:/images/logo/pif_logo.svg</iconset>
+  </property>
   <property name="styleSheet">
    <string notr="true">QWidget#titleBar{
 	background-color: #FFF;

@@ -20,7 +20,7 @@ win32 {
     QMAKE_TARGET_DESCRIPTION = PIF IDE
     QMAKE_TARGET_COPYRIGHT = Copyright (c) 2019 - PIF Project
 
-    #RC_ICONS = images\logos\Logo.ico
+    RC_ICONS = images\logo\pif_logo_x64.ico
     RC_LANG = 0x0800
 }
 else {
