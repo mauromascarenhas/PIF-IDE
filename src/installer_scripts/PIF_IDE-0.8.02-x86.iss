@@ -1,5 +1,5 @@
 [Setup]
-AppId={{B5A4E130-3DE8-4D90-86AA-9BBE5BD37C59}
+AppId={{96B389D3-70E4-48E1-9C47-14127FF9DC50}
 AppName=PIF IDE
 AppVersion=0.8.02
 AppPublisher=PIF Project
@@ -8,7 +8,7 @@ AppPublisherURL=https://github.com/mauromascarenhas/PIF-IDE/
 AppSupportURL=https://github.com/mauromascarenhas/PIF-IDE/issues
 AppUpdatesURL=https://github.com/mauromascarenhas/PIF-IDE/
 AppCopyright=Copyright (C) 2019 PIF Project.
-DefaultDirName={pf}\Projeto PIF\PIF IDE
+DefaultDirName={pf}\Projeto PIF\PIF IDE\
 DisableDirPage=yes
 DefaultGroupName=PIF IDE
 AllowNoIcons=yes

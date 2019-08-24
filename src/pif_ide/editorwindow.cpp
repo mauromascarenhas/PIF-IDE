@@ -23,15 +23,16 @@ EditorWindow::EditorWindow(QWidget *parent) :
     compileProcess = nullptr;
     executeProcess = nullptr;
 
-    setupEditor();
-    setupEnvVars();
-    createShortcuts();
-
     // Detects system language
     QString locale = QLocale::system().name();
     locale.truncate(locale.indexOf("_"));
 
     if (locale == "pt") changeLanguage("pt");
+
+    // Initial setup
+    setupEditor();
+    setupEnvVars();
+    createShortcuts();
 
     // Connects signals and slots
     connect(ui->btNewFile, SIGNAL(clicked()), this, SLOT(newFile()));
