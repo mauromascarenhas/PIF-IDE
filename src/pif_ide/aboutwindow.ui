@@ -594,7 +594,7 @@ QListWidget {
     <item row="0" column="1">
      <widget class="QLabel" name="label_2">
       <property name="text">
-       <string>PIF IDE v0.8.02</string>
+       <string>PIF IDE v0.9.12</string>
       </property>
      </widget>
     </item>

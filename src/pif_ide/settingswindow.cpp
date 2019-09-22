@@ -16,6 +16,9 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
         ui->stackedSettings->setStyleSheet(GlobalSettings::settingsSSheet);
         ui->settingsPage1->setStyleSheet(GlobalSettings::settingsSSheet);
         ui->settingsPage2->setStyleSheet(GlobalSettings::settingsSSheet);
+        ui->settingsPage3->setStyleSheet(GlobalSettings::settingsSSheet);
+        ui->settingsPage4->setStyleSheet(GlobalSettings::settingsSSheet);
+        ui->settingsPage5->setStyleSheet(GlobalSettings::settingsSSheet);
         ui->groupBox->setStyleSheet(GlobalSettings::settingsSSheet);
         ui->groupBox_2->setStyleSheet(GlobalSettings::settingsSSheet);
         ui->groupBox_3->setStyleSheet(GlobalSettings::settingsSSheet);
@@ -49,7 +52,10 @@ SettingsWindow::~SettingsWindow()
 }
 
 void SettingsWindow::setupOptionPages(){
-    ui->settingGroups->addItem(new QListWidgetItem(QIcon("://resources/images/items/code.svg"), tr("Compilers")));
+    ui->settingGroups->addItem(new QListWidgetItem(QIcon("://resources/images/items/code_pif.svg"), tr("PIF Compiler")));
+    ui->settingGroups->addItem(new QListWidgetItem(QIcon("://resources/images/items/code_cpp.svg"), tr("C++ Compiler")));
+    ui->settingGroups->addItem(new QListWidgetItem(QIcon("://resources/images/items/code.svg"), tr("C Compiler")));
+    ui->settingGroups->addItem(new QListWidgetItem(QIcon("://resources/images/items/code_java.svg"), tr("Java JDK/JRE")));
     ui->settingGroups->addItem(new QListWidgetItem(QIcon("://resources/images/items/editor.svg"), tr("Editor")));
     ui->settingGroups->setCurrentRow(0);
 

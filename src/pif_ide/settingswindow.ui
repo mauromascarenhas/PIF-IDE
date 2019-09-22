@@ -128,7 +128,7 @@ QTabBar QToolButton::!enabled{
 	background-color: orange;
 }
 
-QWidget#settingsPage1, QWidget#settingsPage2, QWidget#tabGeneral, QWidget#tabGeneralLayout, QWidget#tabFileLayout, QWidget#tabBackupLayout, QWidget#tabBackup, QWidget#tabHelpLayout, QWidget#screenManagerLayout{
+QWidget#settingsPage1, QWidget#settingsPage2, QWidget#settingsPage3, QWidget#settingsPage4, QWidget#settingsPage5{
 	background: white;
 }
 
@@ -583,6 +583,12 @@ QListWidget {
    <layout class="QGridLayout" name="gridLayout_6">
     <item row="6" column="1">
      <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="leftMargin">
+       <number>10</number>
+      </property>
+      <property name="rightMargin">
+       <number>10</number>
+      </property>
       <item>
        <widget class="QPushButton" name="btSave">
         <property name="text">
@@ -1222,6 +1228,23 @@ QListWidget {
          </widget>
         </item>
         <item>
+         <spacer name="verticalSpacer_5">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="settingsPage2">
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
          <widget class="QGroupBox" name="groupBox_2">
           <property name="title">
            <string>CPP Settings</string>
@@ -1247,6 +1270,23 @@ QListWidget {
           </layout>
          </widget>
         </item>
+        <item>
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="settingsPage3">
+       <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
          <widget class="QGroupBox" name="groupBox_3">
           <property name="title">
@@ -1283,6 +1323,23 @@ QListWidget {
           </layout>
          </widget>
         </item>
+        <item>
+         <spacer name="verticalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="settingsPage4">
+       <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
          <widget class="QGroupBox" name="groupBox_4">
           <property name="title">
@@ -1335,9 +1392,22 @@ QListWidget {
           </layout>
          </widget>
         </item>
+        <item>
+         <spacer name="verticalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>285</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="settingsPage2">
+      <widget class="QWidget" name="settingsPage5">
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <property name="spacing">
          <number>10</number>
@@ -1454,15 +1524,6 @@ QListWidget {
  <tabstops>
   <tabstop>edtPifc</tabstop>
   <tabstop>btSetPifc</tabstop>
-  <tabstop>edtCpp</tabstop>
-  <tabstop>btSetCpp</tabstop>
-  <tabstop>cbUseCpp</tabstop>
-  <tabstop>edtC</tabstop>
-  <tabstop>btSetC</tabstop>
-  <tabstop>edtJavac</tabstop>
-  <tabstop>btSetJavac</tabstop>
-  <tabstop>edtJava</tabstop>
-  <tabstop>btSetJava</tabstop>
   <tabstop>cbFont</tabstop>
   <tabstop>sbFontSize</tabstop>
   <tabstop>btSave</tabstop>

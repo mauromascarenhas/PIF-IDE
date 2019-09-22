@@ -728,7 +728,7 @@ void EditorWindow::changeExec(){
         if (curExec == Executor::JAVA) checked = itens.size() - 1;
     }
 
-    QString selected = QInputDialog::getItem(this, tr("Choose executor | PIF IDE"),
+    QString selected = QInputDialog::getItem(nullptr, tr("Choose executor | PIF IDE"),
                                             tr("Please, choose the final compiler in which the application will"
                                                " be build with."),
                                             itens, checked, false);

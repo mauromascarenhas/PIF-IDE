@@ -93,7 +93,7 @@ QTabBar QToolButton::!enabled{
 	background-color: orange;
 }
 
-QWidget#settingsPage1, QWidget#settingsPage2, QWidget#tabGeneral, QWidget#tabGeneralLayout, QWidget#tabFileLayout, QWidget#tabBackupLayout, QWidget#tabBackup, QWidget#tabHelpLayout, QWidget#screenManagerLayout{
+QWidget#settingsPage1, QWidget#settingsPage2, QWidget#settingsPage3, QWidget#settingsPage4, QWidget#settingsPage5{
 	background: white;
 }
 

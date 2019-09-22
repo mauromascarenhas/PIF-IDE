@@ -53,5 +53,13 @@
         <file>resources/images/settings_w.svg</file>
         <file>resources/images/items/code_w.svg</file>
         <file>resources/images/items/editor_w.svg</file>
+        <file>resources/images/items/code_cpp.svg</file>
+        <file>resources/images/items/code_cpp_w.svg</file>
+        <file>resources/images/items/code_java.svg</file>
+        <file>resources/images/items/code_java_w.svg</file>
+        <file>resources/images/items/code_pif.svg</file>
+        <file>resources/images/items/code_pif_alt.svg</file>
+        <file>resources/images/items/code_pif_alt_w.svg</file>
+        <file>resources/images/items/code_pif_w.svg</file>
     </qresource>
 </RCC>

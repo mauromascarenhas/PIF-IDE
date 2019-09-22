@@ -13,7 +13,7 @@ TARGET = pif_ide
 TEMPLATE = app
 
 win32 {
-    VERSION = 0.8.02
+    VERSION = 0.9.12
 
     QMAKE_TARGET_COMPANY = PIF Project
     QMAKE_TARGET_PRODUCT = PIF IDE
@@ -24,7 +24,7 @@ win32 {
     RC_LANG = 0x0800
 }
 else {
-    VERSION = 0.8.02
+    VERSION = 0.9.12
 }
 
 # The following define makes your compiler emit warnings if you use
