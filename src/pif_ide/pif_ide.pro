@@ -20,7 +20,7 @@ win32 {
     QMAKE_TARGET_DESCRIPTION = PIF IDE
     QMAKE_TARGET_COPYRIGHT = Copyright (c) 2019 - PIF Project
 
-    RC_ICONS = images\logo\pif_logo_x64.ico
+    RC_ICONS = resources\images\logo\pif_logo_x64.ico
     RC_LANG = 0x0800
 }
 else {
@@ -41,6 +41,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 INCLUDEPATH += ./nmainwindow \
+    ./settings \
     ./pifeditor
 
 SOURCES += \
@@ -51,6 +52,7 @@ SOURCES += \
         nmainwindow/nmainwindow.cpp \
         editorwindow.cpp \
         pifeditor/pifeditor.cpp \
+        settings/globalsettings.cpp \
         settingswindow.cpp
 
 HEADERS += \
@@ -60,6 +62,7 @@ HEADERS += \
         nmainwindow/nmainwindow.h \
         editorwindow.h \
         pifeditor/pifeditor.h \
+        settings/globalsettings.h \
         settingswindow.h
 
 FORMS += \

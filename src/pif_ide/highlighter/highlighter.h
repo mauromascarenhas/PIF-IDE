@@ -13,6 +13,8 @@ class Highlighter : public QSyntaxHighlighter
 public:
     Highlighter(QTextDocument *parent = nullptr);
 
+    void createRules(bool darkTheme);
+
 protected:
     void highlightBlock(const QString &text) override;
 

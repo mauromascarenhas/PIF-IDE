@@ -6,8 +6,10 @@
 #include <QFileDialog>
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QListWidgetItem>
 
 #include "nmainwindow.h"
+#include "globalsettings.h"
 
 namespace Ui {
 class SettingsWindow;
@@ -24,6 +26,7 @@ public:
 private:
     Ui::SettingsWindow *ui;
 
+    void setupOptionPages();
     void loadSettings();
 
 private slots:

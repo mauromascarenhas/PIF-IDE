@@ -80,6 +80,14 @@ void NMainWindow::setMinimizeButtonEnabled(bool enable){
     ui->titleBar->setMinimizeButtonEnabled(enable);
 }
 
+void NMainWindow::setTitlebarStylesheet(const QString &styleSheet){
+    ui->titleBar->setStyleSheet(styleSheet);
+}
+
+QString NMainWindow::titlebarStylesheet() const {
+    return ui->titleBar->styleSheet();
+}
+
 void NMainWindow::closeEvent(QCloseEvent *event){
     if (event->isAccepted()) QMainWindow::closeEvent(event);
     else event->ignore();

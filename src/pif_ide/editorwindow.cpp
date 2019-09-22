@@ -127,6 +127,7 @@ void EditorWindow::setupEditor(){
         settings.beginGroup("editor");
         font.setFamily(settings.value("font_family", "Segoe UI").toString());
         font.setPointSize(settings.value("font_size", 12).toInt());
+        GlobalSettings::selectedTheme = settings.value("colour_scheme", 0).toInt();
         settings.endGroup();
     }
     else {
@@ -137,6 +138,44 @@ void EditorWindow::setupEditor(){
 
     ui->sourceEditor->setFont(font);
     highlighter = new Highlighter(ui->sourceEditor->document());
+
+    if (GlobalSettings::selectedTheme){
+        QStringList paths = QStringList() << "://resources/themes/dark/about.css"
+                                          << "://resources/themes/dark/editor.css"
+                                          << "://resources/themes/dark/settings.css"
+                                          << "://resources/themes/dark/titlebar.css";
+
+        QVector<QString *> stylesheets = QVector<QString *>() << &(GlobalSettings::aboutSSheet)
+                                                            << &(GlobalSettings::editorSSheet)
+                                                            << &(GlobalSettings::settingsSSheet)
+                                                            << &(GlobalSettings::titlebarSSheet);
+
+        for (int i = 0; i < paths.size(); ++i){
+            QFile current(paths.at(i));
+            if (current.open(QIODevice::ReadOnly | QIODevice::Text)){
+                *(stylesheets[i]) = current.readAll();
+                current.close();
+            }
+        }
+
+        NMainWindow::setTitlebarStylesheet(GlobalSettings::titlebarSSheet);
+        this->setStyleSheet(GlobalSettings::editorSSheet);
+
+        ui->btOpenFile->setIcon(QIcon("://resources/images/open_w.svg"));
+        ui->btSaveFile->setIcon(QIcon("://resources/images/save_w.svg"));
+        ui->btSaveFileAs->setIcon(QIcon("://resources/images/save_as_w.svg"));
+        ui->btNewFile->setIcon(QIcon("://resources/images/new_w.svg"));
+        ui->btSettings->setIcon(QIcon("://resources/images/settings_alt_w.svg"));
+        ui->btChangeExec->setIcon(QIcon("://resources/images/change_exec_w.svg"));
+        ui->btConsoleView->setIcon(QIcon("://resources/images/console_w.svg"));
+        ui->btAbort->setIcon(QIcon("://resources/images/abort_run_w.svg"));
+        ui->btCompileNRun->setIcon(QIcon("://resources/images/run_w.svg"));
+        ui->btAbout->setIcon(QIcon("://resources/images/about_w.svg"));
+
+        highlighter->createRules(true);
+    }
+
+    outputColour = GlobalSettings::selectedTheme ? "white" : "black";
 }
 
 void EditorWindow::setupEnvVars(){
@@ -483,7 +522,7 @@ void EditorWindow::compileProject(){
     ui->btCompileNRun->setEnabled(false);
     if (!ui->btConsoleView->isChecked()) ui->btConsoleView->toggle();
 
-    ui->cOut->append(QString("<font color=\"black\"><strong>[ %1 ] :</strong></font>").arg(tr("PIF COMPILER OUTPUT")));
+    ui->cOut->append(QString("<font color=\"%1\"><strong>[ %2 ] :</strong></font>").arg(outputColour, tr("PIF COMPILER OUTPUT")));
 
     if (buildProcess){
         disconnect(buildProcess, SIGNAL(readyReadStandardError()), this, SLOT(builderError()));
@@ -521,7 +560,7 @@ void EditorWindow::compileProject(){
 }
 
 void EditorWindow::compileObject(){
-    ui->cOut->append(QString("<font color=\"black\"><strong>[ %1 ] :</strong></font>").arg(tr("COMPILER OUTPUT")));
+    ui->cOut->append(QString("<font color=\"%1\"><strong>[ %2 ] :</strong></font>").arg(outputColour, tr("COMPILER OUTPUT")));
 
     QFileInfo currentFileInfo(currentFile.fileName());
     QString objectPath = currentFileInfo.absolutePath() + QDir::separator() + currentFileInfo.baseName();
@@ -590,7 +629,7 @@ void EditorWindow::compileObject(){
 }
 
 void EditorWindow::runProject(){
-    ui->cOut->append(QString("<font color=\"black\"><strong>[ %1 ] :</strong></font>").arg(tr("APPLICATION OUTPUT")));
+    ui->cOut->append(QString("<font color=\"%1\"><strong>[ %2 ] :</strong></font>").arg(outputColour, tr("APPLICATION OUTPUT")));
     ui->cOut->append("");
 
     ui->btAbort->setEnabled(true);
@@ -732,7 +771,7 @@ void EditorWindow::builderOutput(){
     QStringList lines = QString::fromUtf8(buildProcess->readAllStandardOutput()).split(QRegularExpression("(\\n|\\r\\n)"));
     if (lines.size() > 1 && lines.last().isEmpty()) lines.removeLast();
     for (const QString &current : lines)
-        ui->cOut->append(QString("<font color=\"black\">%1</font>").arg(current));
+        ui->cOut->append(QString("<font color=\"%1\">%2</font>").arg(outputColour, current));
 }
 
 void EditorWindow::builderExited(int exitCode, QProcess::ExitStatus status){
@@ -759,7 +798,7 @@ void EditorWindow::compilerOutput(){
     QStringList lines = QString::fromUtf8(compileProcess->readAllStandardOutput()).split(QRegularExpression("(\\n|\\r\\n)"));
     if (lines.size() > 1 && lines.last().isEmpty()) lines.removeLast();
     for (const QString &current : lines)
-        ui->cOut->append(QString("<font color=\"black\">%1</font>").arg(current));
+        ui->cOut->append(QString("<font color=\"%1\">%2</font>").arg(outputColour, current));
 }
 
 void EditorWindow::compilerExited(int exitCode, QProcess::ExitStatus status){
@@ -786,7 +825,7 @@ void EditorWindow::executionOutput(){
     QStringList lines = QString::fromUtf8(executeProcess->readAllStandardOutput()).split(QRegularExpression("(\\n|\\r\\n)"));
     if (lines.size() > 1 && lines.last().isEmpty()) lines.removeLast();
     for (const QString &current : lines)
-        ui->cOut->append(QString("<font color=\"black\">%1</font>").arg(current));
+        ui->cOut->append(QString("<font color=\"%1\">%2</font>").arg(outputColour, current));
 }
 
 void EditorWindow::executionExited(int exitCode, QProcess::ExitStatus){

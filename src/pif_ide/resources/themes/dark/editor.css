@@ -1,33 +1,18 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
- <class>EditorWindow</class>
- <widget class="QMainWindow" name="EditorWindow">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>478</width>
-    <height>374</height>
-   </rect>
-  </property>
-  <property name="windowTitle">
-   <string>PIF IDE</string>
-  </property>
-  <property name="windowIcon">
-   <iconset resource="resources.qrc">
-    <normaloff>:/resources/images/logo/pif_logo.svg</normaloff>:/resources/images/logo/pif_logo.svg</iconset>
-  </property>
-  <property name="styleSheet">
-   <string notr="true">QWidget#titleBar{
-	background-color: #FFF;
+PIFEditor{
+	background: #474C4F;
+	color: white;
+}
+
+QWidget#titleBar{
+	background-color: #252A2F;
 	border-top: 1px solid orange;
 	border-left: 1px solid orange;
 	border-right: 1px solid orange;
-	color: #000;
+	color: white;
 }
 
 QWidget#centralWidget, QStatusBar{
-	background-color: #FFF;
+	background-color: #252A2F;
 	border-left: 1px solid orange;
 	border-right: 1px solid orange;
 }
@@ -46,12 +31,12 @@ QSlider::handle:horizontal {
 
 /* Vertical and horizontal line customization */
 
-QFrame[frameShape=&quot;4&quot;]
+QFrame[frameShape="4"]
 {
     color: orange;
 }
 
-QFrame[frameShape=&quot;5&quot;]
+QFrame[frameShape="5"]
 {
     color: orange;
 }
@@ -60,7 +45,7 @@ QFrame[frameShape=&quot;5&quot;]
 
 QTabWidget::pane {
 /*	border-top: 1px solid orange;*/
-	background: white;
+	background: #252A2F;
 }
 
 QTabWidget::tab-bar {
@@ -68,7 +53,7 @@ QTabWidget::tab-bar {
 }
 
 QTabBar::tab {
-	background: white;
+	background: #252A2F;
     min-width: 120px;
     min-height: 20px;
     padding: 2px;
@@ -78,14 +63,14 @@ QTabBar::tab {
 }
 
 QTabBar::tab:selected, QTabBar::tab:hover {
-	background: white;
+	background: #252A2F;
 	border-top: 1px solid orange;
 	border-right: 1px solid orange;
 	border-left: 1px solid orange;
 }
 
 QTabBar::tab:selected {
-	background: white;
+	background: #252A2F;
 	border-top: 2px solid orange;
 	border-right: 2px solid orange;
 	border-left: 2px solid orange;
@@ -96,7 +81,7 @@ QTabBar::tab:!selected {
 }
 
 QTabBar QToolButton{
-	background-color: white;
+	background-color: #252A2F;
 	border: none;
 	color: black;
 }
@@ -114,12 +99,15 @@ QTabBar QToolButton::!enabled{
 }
 
 QWidget#tabInfo, QWidget#tabInfoLayout, QWidget#tabGeneral, QWidget#tabGeneralLayout, QWidget#tabFileLayout, QWidget#tabBackupLayout, QWidget#tabBackup, QWidget#tabHelpLayout, QWidget#screenManagerLayout{
-	background: white;
+	background: #252A2F;
 }
 
 QLineEdit{
 	border: 1px solid orange;
 	min-height: 20px;
+	background: #474C4F;
+    border: 1px solid orange;
+	color: white;
 }
 
 QPlainTextEdit{
@@ -130,7 +118,7 @@ QPlainTextEdit{
 QPushButton{
 	background-color: darkorange;
 	border: 5px solid darkorange;
-	color: white;
+	color: #252A2F;
 }
 
 QPushButton::hover{
@@ -299,22 +287,22 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
 
 QComboBox, QFontComboBox {
     border: 1px solid orange;
-	background: white;
+	background: #252A2F;
     border-radius: 3px;
     padding: 1px 18px 1px 3px;
     min-width: 6em;
 }
 
 QComboBox:editable {
-    background: white;
+    background: #252A2F;
 }
 
 QComboBox:!editable, QComboBox::drop-down:editable {
-	background: white;
+	background: #252A2F;
 }
 
 QComboBox:!editable:on, QComboBox::drop-down:editable:on {
-    background: white;
+    background: #252A2F;
 }
 
 QComboBox:on {
@@ -339,7 +327,7 @@ QComboBox::drop-down:hover {
 }
 
 QComboBox::down-arrow {
-    image: url(&quot;:/resources/images/buttons/Down_Arrow.PNG&quot;);
+    image: url(":/resources/images/buttons/Down_Arrow.PNG");
 	width: 10px;
 	height: 10px;
 }
@@ -367,7 +355,11 @@ QComboBox QAbstractItemView:hover {
 QToolButton {
 	background: transparent;
 	border: 1px solid transparent;
-	color: black;
+	color: white;
+}
+
+QToolButton:disabled {
+	background: #33FDAC00;
 }
 
 QToolButton::hover {
@@ -386,7 +378,7 @@ QToolButton::pressed {
 
 QSpinBox, QDoubleSpinBox, QDateEdit, QDateTimeEdit {
 	border: 1px solid orange;
-	background: white;
+	background: #252A2F;
     padding-right: 15px; /* make room for the arrows */
 	border-radius: 5px;
 }
@@ -551,9 +543,10 @@ QGroupBox::title {
     subcontrol-origin: margin;
     subcontrol-position: top left; /* position at the top center */
     padding: 5px;
-    background-color: white;
+    background-color: #252A2F;
 	border: 1px solid orange;
 	border-radius: 2px;
+	color: white;
 }
 
 /*
@@ -569,312 +562,7 @@ QListWidget {
  */
 
 QTextEdit {
+	background: #474C4F;
     border: 1px solid orange;
-}</string>
-  </property>
-  <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <property name="spacing">
-     <number>9</number>
-    </property>
-    <item row="1" column="0">
-     <widget class="PIFEditor" name="sourceEditor">
-      <property name="font">
-       <font>
-        <family>Segoe UI</family>
-        <pointsize>12</pointsize>
-       </font>
-      </property>
-      <property name="tabStopDistance">
-       <double>40.000000000000000</double>
-      </property>
-      <property name="acceptRichText">
-       <bool>false</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QToolButton" name="btOpenFile">
-        <property name="toolTip">
-         <string>Open (Ctrl+O)</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="resources.qrc">
-          <normaloff>:/resources/images/open.svg</normaloff>:/resources/images/open.svg</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>30</width>
-          <height>30</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="btSaveFile">
-        <property name="toolTip">
-         <string>Save (Ctrl+S)</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="resources.qrc">
-          <normaloff>:/resources/images/save.svg</normaloff>:/resources/images/save.svg</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>30</width>
-          <height>30</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="btSaveFileAs">
-        <property name="toolTip">
-         <string>Save as (Ctrl+Shift+S)</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="resources.qrc">
-          <normaloff>:/resources/images/save_as.svg</normaloff>:/resources/images/save_as.svg</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>30</width>
-          <height>30</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="btNewFile">
-        <property name="toolTip">
-         <string>New (Ctrl+N)</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="resources.qrc">
-          <normaloff>:/resources/images/new.svg</normaloff>:/resources/images/new.svg</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>30</width>
-          <height>30</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="btSettings">
-        <property name="toolTip">
-         <string>Settings</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="resources.qrc">
-          <normaloff>:/resources/images/settings_alt.svg</normaloff>:/resources/images/settings_alt.svg</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>30</width>
-          <height>30</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="btChangeExec">
-        <property name="toolTip">
-         <string>Change compiler</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="resources.qrc">
-          <normaloff>:/resources/images/change_exec.svg</normaloff>:/resources/images/change_exec.svg</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>30</width>
-          <height>30</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="btConsoleView">
-        <property name="toolTip">
-         <string>Console (Ctrl+Shift+C)</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="resources.qrc">
-          <normaloff>:/resources/images/console.svg</normaloff>:/resources/images/console.svg</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>30</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="btAbort">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="toolTip">
-         <string>Abort (Ctrl+Shift+E)</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="resources.qrc">
-          <normaloff>:/resources/images/abort_run.svg</normaloff>:/resources/images/abort_run.svg</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>30</width>
-          <height>30</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="btCompileNRun">
-        <property name="toolTip">
-         <string>Build and Run (Ctrl+R)</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="resources.qrc">
-          <normaloff>:/resources/images/run.svg</normaloff>:/resources/images/run.svg</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>30</width>
-          <height>30</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QToolButton" name="btAbout">
-        <property name="toolTip">
-         <string>About</string>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="icon">
-         <iconset resource="resources.qrc">
-          <normaloff>:/resources/images/about.svg</normaloff>:/resources/images/about.svg</iconset>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>30</width>
-          <height>30</height>
-         </size>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-     </layout>
-    </item>
-    <item row="2" column="0">
-     <widget class="QGroupBox" name="consoleWidget">
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>250</height>
-       </size>
-      </property>
-      <property name="title">
-       <string>Output console:</string>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <property name="topMargin">
-        <number>19</number>
-       </property>
-       <item>
-        <widget class="QTextBrowser" name="cOut"/>
-       </item>
-       <item>
-        <widget class="QLineEdit" name="cIn">
-         <property name="placeholderText">
-          <string>Input (Hit &quot;enter&quot; to send)</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QStatusBar" name="statusBar"/>
- </widget>
- <layoutdefault spacing="6" margin="11"/>
- <customwidgets>
-  <customwidget>
-   <class>PIFEditor</class>
-   <extends>QTextEdit</extends>
-   <header>pifeditor/pifeditor.h</header>
-  </customwidget>
- </customwidgets>
- <tabstops>
-  <tabstop>sourceEditor</tabstop>
-  <tabstop>btOpenFile</tabstop>
-  <tabstop>btSaveFile</tabstop>
-  <tabstop>btNewFile</tabstop>
-  <tabstop>btSettings</tabstop>
-  <tabstop>btChangeExec</tabstop>
-  <tabstop>btConsoleView</tabstop>
-  <tabstop>btAbort</tabstop>
-  <tabstop>btCompileNRun</tabstop>
-  <tabstop>btAbout</tabstop>
-  <tabstop>cIn</tabstop>
-  <tabstop>cOut</tabstop>
- </tabstops>
- <resources>
-  <include location="resources.qrc"/>
- </resources>
- <connections/>
-</ui>
+	color: white;
+}

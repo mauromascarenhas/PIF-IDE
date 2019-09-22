@@ -10,6 +10,7 @@
 #include <QDesktopServices>
 
 #include "nmainwindow.h"
+#include "globalsettings.h"
 
 namespace Ui {
 class AboutWindow;

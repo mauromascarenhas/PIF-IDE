@@ -38,6 +38,9 @@ public:
     void setMaximizeButtonEnabled(bool enable);
     void setMinimizeButtonEnabled(bool enable);
 
+    void setTitlebarStylesheet(const QString &styleSheet);
+    QString titlebarStylesheet() const;
+
 protected:
     void closeEvent(QCloseEvent *event);
 

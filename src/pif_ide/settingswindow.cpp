@@ -11,6 +11,19 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     // Otherwise, the window resizing feature will not work
     NMainWindow::setCustomWidgets(ui->centralWidget, ui->statusBar);
     NMainWindow::setMaximizeButtonEnabled(false);
+    if (GlobalSettings::selectedTheme){
+        NMainWindow::setTitlebarStylesheet(GlobalSettings::titlebarSSheet);
+        ui->stackedSettings->setStyleSheet(GlobalSettings::settingsSSheet);
+        ui->settingsPage1->setStyleSheet(GlobalSettings::settingsSSheet);
+        ui->settingsPage2->setStyleSheet(GlobalSettings::settingsSSheet);
+        ui->groupBox->setStyleSheet(GlobalSettings::settingsSSheet);
+        ui->groupBox_2->setStyleSheet(GlobalSettings::settingsSSheet);
+        ui->groupBox_3->setStyleSheet(GlobalSettings::settingsSSheet);
+        ui->groupBox_4->setStyleSheet(GlobalSettings::settingsSSheet);
+        ui->groupBox_5->setStyleSheet(GlobalSettings::settingsSSheet);
+        ui->groupBox_6->setStyleSheet(GlobalSettings::settingsSSheet);
+        this->setStyleSheet(GlobalSettings::settingsSSheet);
+    }
 
     this->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
                 this->size(), QGuiApplication::primaryScreen()->availableGeometry()));
@@ -26,12 +39,21 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     connect(ui->btSetPifc, SIGNAL(clicked(bool)), this, SLOT(getPifcPath()));
     connect(ui->btSetJavac, SIGNAL(clicked(bool)), this, SLOT(getJavacPath()));
 
+    setupOptionPages();
     loadSettings();
 }
 
 SettingsWindow::~SettingsWindow()
 {
     delete ui;
+}
+
+void SettingsWindow::setupOptionPages(){
+    ui->settingGroups->addItem(new QListWidgetItem(QIcon("://resources/images/items/code.svg"), tr("Compilers")));
+    ui->settingGroups->addItem(new QListWidgetItem(QIcon("://resources/images/items/editor.svg"), tr("Editor")));
+    ui->settingGroups->setCurrentRow(0);
+
+    connect(ui->settingGroups, SIGNAL(currentRowChanged(int)), ui->stackedSettings, SLOT(setCurrentIndex(int)));
 }
 
 void SettingsWindow::loadSettings(){
@@ -49,11 +71,12 @@ void SettingsWindow::loadSettings(){
     ui->btSetC->setEnabled(!useCpp);
     settings.endGroup();
 
-    settings.beginGroup("");
+    settings.beginGroup("editor");
     QFont font = ui->cbFont->font();
     font.setFamily(settings.value("font_family", "Segoe UI").toString());
     ui->cbFont->setFont(font);
     ui->sbFontSize->setValue(settings.value("font_size", 12).toInt());
+    ui->cbTheme->setCurrentIndex(settings.value("colour_scheme", 0).toInt());
     settings.endGroup();
 }
 
@@ -71,16 +94,17 @@ void SettingsWindow::saveSettings(){
     settings.beginGroup("editor");
     settings.setValue("font_family", ui->cbFont->font().family());
     settings.setValue("font_size", ui->sbFontSize->value());
+    settings.setValue("colour_scheme", ui->cbTheme->currentIndex());
     settings.endGroup();
 
-    QMessageBox::information(this, tr("Info | PIF IDE"),
+    QMessageBox::information(nullptr, tr("Info | PIF IDE"),
                              tr("Changes are going to take effect as soon as you restart PIF IDE."),
                              QMessageBox::Ok);
     this->close();
 }
 
 void SettingsWindow::resetSettings(){
-    switch (QMessageBox::question(this, tr("Reset Settings | PIF IDE"),
+    switch (QMessageBox::question(nullptr, tr("Reset Settings | PIF IDE"),
                                   tr("Would you like to reset settings to the last saved satus"
                                      " or to restore defaults?"),
                                   QMessageBox::Reset | QMessageBox::RestoreDefaults | QMessageBox::Cancel)) {
@@ -90,7 +114,7 @@ void SettingsWindow::resetSettings(){
     case QMessageBox::RestoreDefaults:
         QSettings settings("Nintersoft", "PIF IDE");
         settings.clear();
-        QMessageBox::information(this, tr("Info | PIF IDE"),
+        QMessageBox::information(nullptr, tr("Info | PIF IDE"),
                                  tr("Changes are going to take effect as soon as you restart PIF IDE."),
                                  QMessageBox::Ok);
         this->close();

@@ -3,9 +3,16 @@
 Highlighter::Highlighter(QTextDocument *parent):
     QSyntaxHighlighter (parent)
 {
+    createRules(false);
+}
+
+void Highlighter::createRules(bool darkTheme){
+    if (highlightingRules.isEmpty())
+        highlightingRules.clear();
+
     HighlightingRule rule;
 
-    keywordFormat.setForeground(Qt::darkBlue);
+    keywordFormat.setForeground(darkTheme ? Qt::cyan : Qt::darkBlue);
     keywordFormat.setFontWeight(QFont::Bold);
 
     const QString keywordPatterns[] = {
@@ -26,18 +33,18 @@ Highlighter::Highlighter(QTextDocument *parent):
         highlightingRules.append(rule);
     }
 
-    quotationFormat.setForeground(Qt::darkGreen);
+    quotationFormat.setForeground(darkTheme ? Qt::green : Qt::darkGreen);
     rule.pattern = QRegularExpression(QStringLiteral("\".*\""));
     rule.format = quotationFormat;
     highlightingRules.append(rule);
 
     booleanFormat.setFontWeight(QFont::Bold);
-    booleanFormat.setForeground(Qt::darkYellow);
+    booleanFormat.setForeground(darkTheme ? Qt::yellow : Qt::darkYellow);
     rule.pattern = QRegularExpression(QStringLiteral("\\b(verdadeiro|falso)\\b"));
     rule.format = booleanFormat;
     highlightingRules.append(rule);
 
-    singleLineCommentFormat.setForeground(Qt::red);
+    singleLineCommentFormat.setForeground(darkTheme ? Qt::magenta : Qt::red);
     rule.pattern = QRegularExpression(QStringLiteral("#[^\n]*"));
     rule.format = singleLineCommentFormat;
     highlightingRules.append(rule);

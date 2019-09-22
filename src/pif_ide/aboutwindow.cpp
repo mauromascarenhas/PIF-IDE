@@ -11,6 +11,10 @@ AboutWindow::AboutWindow(QWidget *parent) :
     // Otherwise, the window resizing feature will not work
     NMainWindow::setCustomWidgets(ui->centralWidget, ui->statusBar);
     NMainWindow::setMaximizeButtonEnabled(false);
+    if (GlobalSettings::selectedTheme){
+        NMainWindow::setTitlebarStylesheet(GlobalSettings::titlebarSSheet);
+        this->setStyleSheet(GlobalSettings::aboutSSheet);
+    }
 
     this->setGeometry(QStyle::alignedRect(Qt::LeftToRight, Qt::AlignCenter,
                 this->size(), QGuiApplication::primaryScreen()->availableGeometry()));

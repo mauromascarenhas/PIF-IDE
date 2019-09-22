@@ -7,6 +7,7 @@
 #include <QEvent>
 #include <QScreen>
 #include <QLocale>
+#include <QVector>
 #include <QProcess>
 #include <QShortcut>
 #include <QFileInfo>
@@ -25,6 +26,7 @@
 #include "pifeditor.h"
 #include "nmainwindow.h"
 #include "aboutwindow.h"
+#include "globalsettings.h"
 #include "settingswindow.h"
 #include "highlighter/highlighter.h"
 
@@ -57,6 +59,8 @@ private:
     QString cPath;
     QString javaPath;
     QString javacPath;
+
+    QString outputColour;
 
     QFile currentFile;
     QProcess *buildProcess;

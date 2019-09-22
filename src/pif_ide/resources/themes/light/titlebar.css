@@ -1,0 +1,31 @@
+QPushButton{
+	border : 0.5px solid gray;
+	border-radius: 3px;
+	min-height: 20px;
+	margin: 1px;
+	background: white;
+	color: gray;
+}
+
+QPushButton::hover{
+	background: darkorange;
+	border : 0.5px solid darkorange;
+	color: white;
+}
+
+QPushButton::pressed, QPushButton::!enabled{
+	background: orange;
+	border : 0.5px solid orange;
+	color: white;
+}
+
+QWidget::lblFormTitle{
+	background-color: white;
+}
+
+QPushButton#lblFormTitle{
+	background: transparent;
+	border-radius: 0px;
+	border: transparent;
+	color: black;
+}
