@@ -42,6 +42,22 @@ SettingsWindow::SettingsWindow(QWidget *parent) :
     connect(ui->btSetPifc, SIGNAL(clicked(bool)), this, SLOT(getPifcPath()));
     connect(ui->btSetJavac, SIGNAL(clicked(bool)), this, SLOT(getJavacPath()));
 
+    connect(ui->btRestorePifcArgs, &QPushButton::clicked, [this]{
+       ui->txtCmdPifc->setPlainText(tr("-f\n-l\n$lang\n$source\n-o\n$object"));
+    });
+    connect(ui->btRestoreCppArgs, &QPushButton::clicked, [this]{
+       ui->txtCmdCpp->setPlainText(tr("$source\n-o\n$executable"));
+    });
+    connect(ui->btRestoreCArgs, &QPushButton::clicked, [this]{
+       ui->txtCmdC->setPlainText(tr("$source\n-o\n$executable"));
+    });
+    connect(ui->btRestoreJavacArgs, &QPushButton::clicked, [this]{
+       ui->txtCmdJavac->setPlainText(tr("$source"));
+    });
+    connect(ui->btRestoreJavaArgs, &QPushButton::clicked, [this]{
+       ui->txtCmdJava->setPlainText(tr("-cp\n$wdir\n$executable"));
+    });
+
     setupOptionPages();
     loadSettings();
 }
@@ -58,6 +74,7 @@ void SettingsWindow::setupOptionPages(){
     ui->settingGroups->addItem(new QListWidgetItem(QIcon("://resources/images/items/code_java.svg"), tr("Java JDK/JRE")));
     ui->settingGroups->addItem(new QListWidgetItem(QIcon("://resources/images/items/editor.svg"), tr("Editor")));
     ui->settingGroups->setCurrentRow(0);
+    ui->settingGroups->setFocus();
 
     connect(ui->settingGroups, SIGNAL(currentRowChanged(int)), ui->stackedSettings, SLOT(setCurrentIndex(int)));
 }
@@ -71,10 +88,18 @@ void SettingsWindow::loadSettings(){
     ui->edtPifc->setText(settings.value("pifc_path", "").toString());
     ui->edtJavac->setText(settings.value("javac_path", "").toString());
 
+    ui->txtCmdPifc->setPlainText(settings.value("pifc_args", tr("-f\n-l\n$lang\n$source\n-o\n$object")).toString());
+    ui->txtCmdC->setPlainText(settings.value("c_args", tr("$source\n-o\n$executable")).toString());
+    ui->txtCmdCpp->setPlainText(settings.value("cpp_args", tr("$source\n-o\n$executable")).toString());
+    ui->txtCmdJavac->setPlainText(settings.value("javac_args", tr("$source")).toString());
+    ui->txtCmdJava->setPlainText(settings.value("java_args", tr("-cp\n$wdir\n$executable")).toString());
+
     bool useCpp = settings.value("c_uses_cpp", false).toBool();
     ui->cbUseCpp->setChecked(useCpp);
     ui->edtC->setEnabled(!useCpp);
     ui->btSetC->setEnabled(!useCpp);
+    ui->txtCmdC->setEnabled(!useCpp);
+    ui->btRestoreCArgs->setEnabled(!useCpp);
     settings.endGroup();
 
     settings.beginGroup("editor");
@@ -95,6 +120,12 @@ void SettingsWindow::saveSettings(){
     settings.setValue("pifc_path", ui->edtPifc->text());
     settings.setValue("javac_path", ui->edtJavac->text());
     settings.setValue("c_uses_cpp", ui->cbUseCpp->isChecked());
+
+    settings.setValue("c_args", ui->txtCmdC->toPlainText());
+    settings.setValue("cpp_args", ui->txtCmdCpp->toPlainText());
+    settings.setValue("java_args", ui->txtCmdJava->toPlainText());
+    settings.setValue("javac_args", ui->txtCmdJavac->toPlainText());
+    settings.setValue("pifc_args", ui->txtCmdPifc->toPlainText());
     settings.endGroup();
 
     settings.beginGroup("editor");
@@ -131,6 +162,8 @@ void SettingsWindow::resetSettings(){
 void SettingsWindow::useCppAsC(bool checked){
     ui->edtC->setEnabled(!checked);
     ui->btSetC->setEnabled(!checked);
+    ui->txtCmdC->setEnabled(!checked);
+    ui->btRestoreCArgs->setEnabled(!checked);
 }
 
 void SettingsWindow::getCPath(){

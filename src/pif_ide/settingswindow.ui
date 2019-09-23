@@ -9,20 +9,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>700</width>
-    <height>500</height>
+    <width>750</width>
+    <height>550</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>700</width>
-    <height>500</height>
+    <width>750</width>
+    <height>550</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>700</width>
-    <height>500</height>
+    <width>750</width>
+    <height>550</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -1207,6 +1207,68 @@ QListWidget {
            <string>PIF Settings</string>
           </property>
           <layout class="QGridLayout" name="gridLayout">
+           <property name="verticalSpacing">
+            <number>10</number>
+           </property>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="edtPifc"/>
+           </item>
+           <item row="2" column="0" colspan="3">
+            <widget class="QPlainTextEdit" name="txtCmdPifc">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>42</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>100</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
+             <property name="plainText">
+              <string>-f
+-l
+$lang
+$source
+-o
+$object</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="3">
+            <widget class="QLabel" name="label_9">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Command line arguments - one argument per line&lt;br /&gt;(DO NOT CHANGE IT unless you really know what you are doing):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0" colspan="3">
+            <widget class="QPushButton" name="btRestorePifcArgs">
+             <property name="text">
+              <string>Restore</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QPushButton" name="btSetPifc">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
            <item row="0" column="0">
             <widget class="QLabel" name="label">
              <property name="text">
@@ -1214,13 +1276,18 @@ QListWidget {
              </property>
             </widget>
            </item>
-           <item row="0" column="1">
-            <widget class="QLineEdit" name="edtPifc"/>
-           </item>
-           <item row="0" column="2">
-            <widget class="QPushButton" name="btSetPifc">
+           <item row="5" column="0" colspan="3">
+            <widget class="QLabel" name="label_10">
+             <property name="font">
+              <font>
+               <pointsize>9</pointsize>
+              </font>
+             </property>
              <property name="text">
-              <string>...</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Variables:&lt;/p&gt;&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li&gt; $lang - output language&lt;/li&gt;&lt;li&gt; $source - *.pifc source file path&lt;/li&gt;&lt;li&gt; $object - output source file (*.c, *.cpp, *.java)&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -1250,6 +1317,70 @@ QListWidget {
            <string>CPP Settings</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
+           <property name="verticalSpacing">
+            <number>10</number>
+           </property>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="edtCpp"/>
+           </item>
+           <item row="1" column="0" colspan="3">
+            <widget class="QLabel" name="label_12">
+             <property name="text">
+              <string>Command line arguments (CPP compiler):</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0" colspan="3">
+            <widget class="QLabel" name="label_11">
+             <property name="font">
+              <font>
+               <pointsize>9</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Variables:&lt;/p&gt;&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;$source - *.cpp source file path&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;$executable - output executable file (*.exe [win])&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="3">
+            <widget class="QPlainTextEdit" name="txtCmdCpp">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>42</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>100</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>9</pointsize>
+              </font>
+             </property>
+             <property name="plainText">
+              <string>$source
+-o
+$executable</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="2">
+            <widget class="QPushButton" name="btSetCpp">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
            <item row="0" column="0">
             <widget class="QLabel" name="label_2">
              <property name="text">
@@ -1257,13 +1388,10 @@ QListWidget {
              </property>
             </widget>
            </item>
-           <item row="0" column="1">
-            <widget class="QLineEdit" name="edtCpp"/>
-           </item>
-           <item row="0" column="2">
-            <widget class="QPushButton" name="btSetCpp">
+           <item row="3" column="0" colspan="3">
+            <widget class="QPushButton" name="btRestoreCppArgs">
              <property name="text">
-              <string>...</string>
+              <string>Restore</string>
              </property>
             </widget>
            </item>
@@ -1303,6 +1431,59 @@ QListWidget {
              </property>
             </widget>
            </item>
+           <item row="3" column="0" colspan="3">
+            <widget class="QPlainTextEdit" name="txtCmdC">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>42</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>100</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>9</pointsize>
+              </font>
+             </property>
+             <property name="plainText">
+              <string>$source
+-o
+$executable</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0" colspan="3">
+            <widget class="QLabel" name="label_14">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Variables:&lt;/p&gt;&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;$source - *.c source file path&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;$executable - output executable file (*.exe [win])&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0" colspan="3">
+            <widget class="QCheckBox" name="cbUseCpp">
+             <property name="text">
+              <string>Use CPP Compiler Settings</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="3">
+            <widget class="QLabel" name="label_13">
+             <property name="text">
+              <string>Command line arguments (C compiler):</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
            <item row="1" column="1">
             <widget class="QLineEdit" name="edtC"/>
            </item>
@@ -1313,10 +1494,10 @@ QListWidget {
              </property>
             </widget>
            </item>
-           <item row="0" column="0" colspan="3">
-            <widget class="QCheckBox" name="cbUseCpp">
+           <item row="4" column="0" colspan="3">
+            <widget class="QPushButton" name="btRestoreCArgs">
              <property name="text">
-              <string>Use CPP Compiler Settings</string>
+              <string>Restore</string>
              </property>
             </widget>
            </item>
@@ -1347,31 +1528,99 @@ QListWidget {
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
            <property name="topMargin">
-            <number>19</number>
-           </property>
-           <property name="bottomMargin">
             <number>11</number>
            </property>
            <property name="verticalSpacing">
-            <number>15</number>
+            <number>10</number>
            </property>
-           <item row="1" column="1">
-            <widget class="QLineEdit" name="edtJava"/>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLineEdit" name="edtJavac"/>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_4">
-             <property name="text">
-              <string>JAVA (JVM) Path:</string>
-             </property>
-            </widget>
-           </item>
            <item row="0" column="0">
             <widget class="QLabel" name="label_5">
              <property name="text">
               <string>JAVAC (Compiler) Path:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="1">
+            <widget class="QLineEdit" name="edtJava"/>
+           </item>
+           <item row="5" column="2">
+            <widget class="QPushButton" name="btSetJava">
+             <property name="text">
+              <string>...</string>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0" colspan="3">
+            <widget class="QLabel" name="label_16">
+             <property name="text">
+              <string>Command line arguments (JVM - Java runtime):</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0" colspan="3">
+            <widget class="QPlainTextEdit" name="txtCmdJava">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>42</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>9</pointsize>
+              </font>
+             </property>
+             <property name="plainText">
+              <string>-cp
+$wdir
+$executable</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0" colspan="3">
+            <widget class="QPushButton" name="btRestoreJavaArgs">
+             <property name="text">
+              <string>Restore</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0" colspan="3">
+            <widget class="QPlainTextEdit" name="txtCmdJavac">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>42</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>60</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>9</pointsize>
+              </font>
+             </property>
+             <property name="plainText">
+              <string>$source</string>
+             </property>
+            </widget>
+           </item>
+           <item row="5" column="0">
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>JAVA (JVM) Path:</string>
              </property>
             </widget>
            </item>
@@ -1382,10 +1631,43 @@ QListWidget {
              </property>
             </widget>
            </item>
-           <item row="1" column="2">
-            <widget class="QPushButton" name="btSetJava">
+           <item row="1" column="0" colspan="3">
+            <widget class="QLabel" name="label_15">
              <property name="text">
-              <string>...</string>
+              <string>Command line arguments (Java compiler):</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="0" colspan="3">
+            <widget class="QLabel" name="label_17">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Variables:&lt;/p&gt;&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;$source - *.java source file path&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;$wdir - Java binary file's parent directory (classpath).&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;$executable - Java executable class name.&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QLineEdit" name="edtJavac"/>
+           </item>
+           <item row="3" column="0" colspan="3">
+            <widget class="QPushButton" name="btRestoreJavacArgs">
+             <property name="text">
+              <string>Restore</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0" colspan="3">
+            <widget class="Line" name="line">
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
@@ -1522,10 +1804,31 @@ QListWidget {
   <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <tabstops>
+  <tabstop>settingGroups</tabstop>
   <tabstop>edtPifc</tabstop>
   <tabstop>btSetPifc</tabstop>
+  <tabstop>txtCmdPifc</tabstop>
+  <tabstop>btRestorePifcArgs</tabstop>
+  <tabstop>edtCpp</tabstop>
+  <tabstop>btSetCpp</tabstop>
+  <tabstop>txtCmdCpp</tabstop>
+  <tabstop>btRestoreCppArgs</tabstop>
+  <tabstop>cbUseCpp</tabstop>
+  <tabstop>edtC</tabstop>
+  <tabstop>btSetC</tabstop>
+  <tabstop>txtCmdC</tabstop>
+  <tabstop>btRestoreCArgs</tabstop>
+  <tabstop>edtJavac</tabstop>
+  <tabstop>btSetJavac</tabstop>
+  <tabstop>txtCmdJavac</tabstop>
+  <tabstop>btRestoreJavacArgs</tabstop>
+  <tabstop>edtJava</tabstop>
+  <tabstop>btSetJava</tabstop>
+  <tabstop>txtCmdJava</tabstop>
+  <tabstop>btRestoreJavaArgs</tabstop>
   <tabstop>cbFont</tabstop>
   <tabstop>sbFontSize</tabstop>
+  <tabstop>cbTheme</tabstop>
   <tabstop>btSave</tabstop>
   <tabstop>btCancel</tabstop>
   <tabstop>btReset</tabstop>

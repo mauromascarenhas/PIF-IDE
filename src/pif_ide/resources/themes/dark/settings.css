@@ -113,9 +113,19 @@ QLineEdit:disabled{
 	background: #252A2F;
 }
 
-QPlainTextEdit{
-	border: 1px solid orange;
+/*
+ * QPlainTextEdit
+ */
+
+QPlainTextEdit {
+	background: #474C4F;
+    border: 1px solid orange;
 	min-height: 40px;
+	color: white;
+}
+
+QPlainTextEdit:disabled {
+	background: #252A2F;
 }
 
 QPushButton{
@@ -564,7 +574,7 @@ QListWidget {
  */
 
 QTextEdit {
-	background: #252A2F;
+	background: #474C4F;
     border: 1px solid orange;
 	color: white;
 }

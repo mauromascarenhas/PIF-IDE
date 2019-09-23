@@ -175,6 +175,7 @@ void EditorWindow::setupEditor(){
         highlighter->createRules(true);
     }
 
+    inputColour = GlobalSettings::selectedTheme ? "magenta" : "red";
     outputColour = GlobalSettings::selectedTheme ? "white" : "black";
 }
 
@@ -183,7 +184,8 @@ void EditorWindow::setupEnvVars(){
     if (settings.childGroups().contains("environment variables")){
         settings.beginGroup("environment variables");
 
-        cPath = settings.value(settings.value("c_uses_cpp", false).toBool() ? "cpp_path" : "c_path", "").toString();
+        bool cUsesCpp = settings.value("c_uses_cpp", false).toBool();
+        cPath = settings.value(cUsesCpp ? "cpp_path" : "c_path", "").toString();
         cppPath = settings.value("cpp_path", "").toString();
         javaPath = settings.value("java_path", "").toString();
         pifcPath = settings.value("pifc_path", "").toString();
@@ -204,6 +206,12 @@ void EditorWindow::setupEnvVars(){
             }
         }
 #endif
+
+        GlobalSettings::cmdlPifc = settings.value("pifc_args", tr("-f\n-l\n$lang\n$source\n-o\n$object")).toString().split("\n", QString::SkipEmptyParts);
+        GlobalSettings::cmdlCppComp = settings.value("cpp_args", tr("$source\n-o\n$executable")).toString().split("\n", QString::SkipEmptyParts);
+        GlobalSettings::cmdlCComp = cUsesCpp ? GlobalSettings::cmdlCppComp : settings.value("c_args", tr("$source\n-o\n$executable")).toString().split("\n", QString::SkipEmptyParts);
+        GlobalSettings::cmdlJavaComp = settings.value("javac_args", tr("$source")).toString().split("\n", QString::SkipEmptyParts);
+        GlobalSettings::cmdlJavaExec = settings.value("java_args", tr("-cp\n$wdir\n$executable")).toString().split("\n", QString::SkipEmptyParts);
     }
     else {
         settings.beginGroup("environment variables");
@@ -542,20 +550,23 @@ void EditorWindow::compileProject(){
     QFileInfo currentFileInfo(currentFile.fileName());
     QString objectPath = currentFileInfo.absolutePath() + QDir::separator() + currentFileInfo.baseName();
 
+    QStringList cLineArgs = GlobalSettings::cmdlPifc;
+    cLineArgs.replaceInStrings("$source", currentFile.fileName());
     switch (curExec) {
         case C:
-            buildProcess->setArguments(QStringList() << "-f" << "-l" << "c" << currentFile.fileName()
-                                                     << "-o" << (objectPath + ".c"));
+            cLineArgs.replaceInStrings("$lang", "c")
+                    .replaceInStrings("$object", (objectPath + ".c"));
             break;
         case CPP:
-            buildProcess->setArguments(QStringList() << "-f" << "-l" << "cpp" << currentFile.fileName()
-                                                     << "-o" << (objectPath + ".cpp"));
+            cLineArgs.replaceInStrings("$lang", "cpp")
+                    .replaceInStrings("$object", (objectPath + ".cpp"));
             break;
         default:
-            buildProcess->setArguments(QStringList() << "-f" << "-l" << "java" << currentFile.fileName()
-                                                     << "-o" << (objectPath + ".java"));
+            cLineArgs.replaceInStrings("$lang", "java")
+                    .replaceInStrings("$object", (objectPath + ".java"));
             break;
     }
+    buildProcess->setArguments(cLineArgs);
     buildProcess->start();
 }
 
@@ -584,6 +595,7 @@ void EditorWindow::compileObject(){
     connect(compileProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(compilerOutput()));
     connect(compileProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(compilerExited(int,QProcess::ExitStatus)));
 
+    QStringList cLineArgs;
     switch (curExec) {
         case C:
             if (cPath.isEmpty()) {
@@ -593,8 +605,9 @@ void EditorWindow::compileObject(){
                 return;
             }
             compileProcess->setProgram(cPath);
-            compileProcess->setArguments(QStringList() << (objectPath + ".c")
-                                        << "-o" << (objectPath + compileExt));
+            cLineArgs = GlobalSettings::cmdlCComp;
+            cLineArgs.replaceInStrings("$source", (objectPath + ".c"))
+                    .replaceInStrings("$executable", (objectPath + compileExt));
             break;
         case CPP:
             if (cppPath.isEmpty()) {
@@ -604,8 +617,9 @@ void EditorWindow::compileObject(){
                 return;
             }
             compileProcess->setProgram(cppPath);
-            compileProcess->setArguments(QStringList() << (objectPath + ".cpp")
-                                        << "-o" << (objectPath + compileExt));
+            cLineArgs = GlobalSettings::cmdlCppComp;
+            cLineArgs.replaceInStrings("$source", (objectPath + ".cpp"))
+                    .replaceInStrings("$executable", (objectPath + compileExt));
             break;
         case JAVA:
             if (javacPath.isEmpty()) {
@@ -615,7 +629,8 @@ void EditorWindow::compileObject(){
                 return;
             }
             compileProcess->setProgram(javacPath);
-            compileProcess->setArguments(QStringList() << (objectPath + ".java"));
+            cLineArgs = GlobalSettings::cmdlJavaComp;
+            cLineArgs.replaceInStrings("$source", (objectPath + ".java"));
             break;
         default:
             if (javacPath.isEmpty()) {
@@ -625,6 +640,7 @@ void EditorWindow::compileObject(){
                 return;
             }
     }
+    compileProcess->setArguments(cLineArgs);
     compileProcess->start();
 }
 
@@ -663,6 +679,7 @@ void EditorWindow::runProject(){
     connect(executeProcess, SIGNAL(readyReadStandardOutput()), this, SLOT(executionOutput()));
     connect(executeProcess, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(executionExited(int,QProcess::ExitStatus)));
 
+    QStringList cLineArgs;
     switch (curExec) {
         case JAVA:
             if (javaPath.isEmpty()) {
@@ -672,14 +689,15 @@ void EditorWindow::runProject(){
                 return;
             }
             executeProcess->setProgram(javaPath);
-            executeProcess->setArguments(QStringList() << "-cp" << currentFileInfo.absolutePath()
-                                            << currentFileInfo.baseName());
+            cLineArgs = GlobalSettings::cmdlJavaExec;
+            cLineArgs.replaceInStrings("$wdir", currentFileInfo.absolutePath())
+                    .replaceInStrings("$executable", currentFileInfo.baseName());
             break;
         default:
             executeProcess->setProgram(objectPath);
-            executeProcess->setArguments(QStringList());
             break;
     }
+    executeProcess->setArguments(cLineArgs);
     executeProcess->start(QIODevice::ReadWrite | QIODevice::Unbuffered);
 }
 
@@ -702,8 +720,8 @@ void EditorWindow::increaseFontSize(){
 }
 
 void EditorWindow::sendUserInput(){
-    if (executeProcess->state() == QProcess::NotRunning)
-        ui->cOut->append(QString("<font color=\"red\">%1</font>").arg(ui->cIn->text()));
+    if (!executeProcess || executeProcess->state() == QProcess::NotRunning)
+        ui->cOut->append(QString("<font color=\"%1\">%2</font>").arg(inputColour, ui->cIn->text()));
     else {
         ui->cOut->append(QString("<font color=\"blue\">%1</font>").arg(ui->cIn->text()));
         executeProcess->write(ui->cIn->text().toUtf8() + "\n");

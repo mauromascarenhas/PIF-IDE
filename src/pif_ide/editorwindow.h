@@ -60,6 +60,7 @@ private:
     QString javaPath;
     QString javacPath;
 
+    QString inputColour;
     QString outputColour;
 
     QFile currentFile;
