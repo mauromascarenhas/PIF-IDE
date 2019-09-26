@@ -551,19 +551,19 @@ void EditorWindow::compileProject(){
     QString objectPath = currentFileInfo.absolutePath() + QDir::separator() + currentFileInfo.baseName();
 
     QStringList cLineArgs = GlobalSettings::cmdlPifc;
-    cLineArgs.replaceInStrings("$source", currentFile.fileName());
+    cLineArgs.replaceInStrings(tr("$source"), currentFile.fileName());
     switch (curExec) {
         case C:
-            cLineArgs.replaceInStrings("$lang", "c")
-                    .replaceInStrings("$object", (objectPath + ".c"));
+            cLineArgs.replaceInStrings(tr("$lang"), "c")
+                    .replaceInStrings(tr("$object"), (objectPath + ".c"));
             break;
         case CPP:
-            cLineArgs.replaceInStrings("$lang", "cpp")
-                    .replaceInStrings("$object", (objectPath + ".cpp"));
+            cLineArgs.replaceInStrings(tr("$lang"), "cpp")
+                    .replaceInStrings(tr("$object"), (objectPath + ".cpp"));
             break;
         default:
-            cLineArgs.replaceInStrings("$lang", "java")
-                    .replaceInStrings("$object", (objectPath + ".java"));
+            cLineArgs.replaceInStrings(tr("$lang"), "java")
+                    .replaceInStrings(tr("$object"), (objectPath + ".java"));
             break;
     }
     buildProcess->setArguments(cLineArgs);
@@ -606,8 +606,8 @@ void EditorWindow::compileObject(){
             }
             compileProcess->setProgram(cPath);
             cLineArgs = GlobalSettings::cmdlCComp;
-            cLineArgs.replaceInStrings("$source", (objectPath + ".c"))
-                    .replaceInStrings("$executable", (objectPath + compileExt));
+            cLineArgs.replaceInStrings(tr("$source"), (objectPath + ".c"))
+                    .replaceInStrings(tr("$executable"), (objectPath + compileExt));
             break;
         case CPP:
             if (cppPath.isEmpty()) {
@@ -618,8 +618,8 @@ void EditorWindow::compileObject(){
             }
             compileProcess->setProgram(cppPath);
             cLineArgs = GlobalSettings::cmdlCppComp;
-            cLineArgs.replaceInStrings("$source", (objectPath + ".cpp"))
-                    .replaceInStrings("$executable", (objectPath + compileExt));
+            cLineArgs.replaceInStrings(tr("$source"), (objectPath + ".cpp"))
+                    .replaceInStrings(tr("$executable"), (objectPath + compileExt));
             break;
         case JAVA:
             if (javacPath.isEmpty()) {
@@ -630,7 +630,7 @@ void EditorWindow::compileObject(){
             }
             compileProcess->setProgram(javacPath);
             cLineArgs = GlobalSettings::cmdlJavaComp;
-            cLineArgs.replaceInStrings("$source", (objectPath + ".java"));
+            cLineArgs.replaceInStrings(tr("$source"), (objectPath + ".java"));
             break;
         default:
             if (javacPath.isEmpty()) {
@@ -690,8 +690,8 @@ void EditorWindow::runProject(){
             }
             executeProcess->setProgram(javaPath);
             cLineArgs = GlobalSettings::cmdlJavaExec;
-            cLineArgs.replaceInStrings("$wdir", currentFileInfo.absolutePath())
-                    .replaceInStrings("$executable", currentFileInfo.baseName());
+            cLineArgs.replaceInStrings(tr("$wdir"), currentFileInfo.absolutePath())
+                    .replaceInStrings(tr("$executable"), currentFileInfo.baseName());
             break;
         default:
             executeProcess->setProgram(objectPath);

@@ -375,6 +375,10 @@ $executavel</translation>
     </message>
     <message>
         <location filename="../editorwindow.cpp" line="213"/>
+        <location filename="../editorwindow.cpp" line="554"/>
+        <location filename="../editorwindow.cpp" line="609"/>
+        <location filename="../editorwindow.cpp" line="621"/>
+        <location filename="../editorwindow.cpp" line="633"/>
         <source>$source</source>
         <translation>$codigofonte</translation>
     </message>
@@ -550,6 +554,20 @@ $executavel</translation>
         <translation>SAÍDA DO COMPILADOR PIF</translation>
     </message>
     <message>
+        <location filename="../editorwindow.cpp" line="557"/>
+        <location filename="../editorwindow.cpp" line="561"/>
+        <location filename="../editorwindow.cpp" line="565"/>
+        <source>$lang</source>
+        <translation>$ling</translation>
+    </message>
+    <message>
+        <location filename="../editorwindow.cpp" line="558"/>
+        <location filename="../editorwindow.cpp" line="562"/>
+        <location filename="../editorwindow.cpp" line="566"/>
+        <source>$object</source>
+        <translation>$objeto</translation>
+    </message>
+    <message>
         <location filename="../editorwindow.cpp" line="574"/>
         <source>COMPILER OUTPUT</source>
         <translation>SAÍDA DO COMPILADOR</translation>
@@ -560,6 +578,13 @@ $executavel</translation>
         <location filename="../editorwindow.cpp" line="627"/>
         <source>%1 compiler path is not set.</source>
         <translation>O caminho para o compilador %1 não foi definido.</translation>
+    </message>
+    <message>
+        <location filename="../editorwindow.cpp" line="610"/>
+        <location filename="../editorwindow.cpp" line="622"/>
+        <location filename="../editorwindow.cpp" line="694"/>
+        <source>$executable</source>
+        <translation>$executavel</translation>
     </message>
     <message>
         <location filename="../editorwindow.cpp" line="638"/>
@@ -580,6 +605,11 @@ $executavel</translation>
         <location filename="../editorwindow.cpp" line="687"/>
         <source>There is no JVM set. Execution aborted.</source>
         <translation>Não há JVM definida. Execução abortada.</translation>
+    </message>
+    <message>
+        <location filename="../editorwindow.cpp" line="693"/>
+        <source>$wdir</source>
+        <translation>$dirtrab</translation>
     </message>
     <message>
         <location filename="../editorwindow.cpp" line="710"/>
