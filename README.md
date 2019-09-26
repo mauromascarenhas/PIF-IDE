@@ -9,6 +9,8 @@ Ambiente de desenvolvimento para a linguagem de programação PIF
 Há distribuições binárias a partir da página de [*releases*](https://github.com/mauromascarenhas/PIF-IDE/releases).
 Vá para os detalhes da última versão e baixe o arquivo pif_ide-X.X.XX_x{64|86}.exe, onde X.X.XX é a versão e x{64|86} é a arquitetura compilada (escolha a arquitetura compatível com a sua máquina). Depois, basta seguir os passos do instalador e executar a IDE através dos atalhos gerados.
 
+**A partir da versão 0.9.12.0**, o instalador do compilador PIF está embutido no instalador da IDE.
+
 Alternativamente, você poderá compilar o projeto a partir do código fonte, conforme descrito na sessão **Compilando a partir do código fonte**.
 
 ## Linux
